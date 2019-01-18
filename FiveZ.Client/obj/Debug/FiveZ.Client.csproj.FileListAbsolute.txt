@@ -1,0 +1,10 @@
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\bin\Debug\FiveZ.Client.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\bin\Debug\FiveZ.Client.pdb
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\bin\Debug\FiveZ.Shared.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\bin\Debug\FiveZ.Shared.pdb
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\obj\Debug\FiveZ.Client.csprojAssemblyReference.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\obj\Debug\FiveZ.Client.csproj.CoreCompileInputs.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\obj\Debug\FiveZ.Client.csproj.CopyComplete
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\fivez\FiveZ.Client.net.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Client\obj\Debug\FiveZ.Client.net.dll
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\FiveZ.Client.net.dll

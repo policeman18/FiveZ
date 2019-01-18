@@ -1,0 +1,8 @@
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\bin\Debug\FiveZ.Shared.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\bin\Debug\FiveZ.Shared.pdb
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\bin\Debug\CitizenFX.Server.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\obj\Debug\FiveZ.Shared.csprojAssemblyReference.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\obj\Debug\FiveZ.Shared.csproj.CoreCompileInputs.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Shared\obj\Debug\FiveZ.Shared.dll
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\fivez\FiveZ.Shared.dll
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\FiveZ.Shared.dll

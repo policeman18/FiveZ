@@ -1,0 +1,6 @@
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\fivez\FiveZ.Server.net.dll
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Server\obj\Debug\FiveZ.Server.csprojAssemblyReference.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Server\obj\Debug\FiveZ.Server.csproj.CoreCompileInputs.cache
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Server\obj\Debug\FiveZ.Server.csproj.CopyComplete
+C:\Users\Xander\source\repos\FiveZ\FiveZ.Server\obj\Debug\FiveZ.Server.net.dll
+C:\Users\Xander\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\FiveZ.Server.net.dll
