@@ -1,5 +1,6 @@
 ﻿using System;
 using CitizenFX.Core;
+using CitizenFX.Core.Native;
 using FiveZ.Shared;
 
 namespace FiveZ.Server
@@ -67,5 +68,11 @@ namespace FiveZ.Server
                 return null;
             }
         }
+
+        public void RegisterCommand(string _command, Delegate _action, bool _restricted)
+        {
+            API.RegisterCommand(_command, _action, _restricted);
+        }
+
     }
 }
