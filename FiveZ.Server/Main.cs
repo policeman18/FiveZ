@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using CitizenFX.Core;
 using FiveZ.Shared;
 

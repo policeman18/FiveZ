@@ -1,4 +1,5 @@
-﻿using FiveZ.Shared;
+﻿using FiveZ.Client.Classes;
+using FiveZ.Shared;
 
 namespace FiveZ.Client
 {
@@ -8,7 +9,7 @@ namespace FiveZ.Client
         {
             Utils.WriteLine("Loading Classes...");
 
-
+            new SessionManager();
 
             Utils.WriteLine("Classes Loaded!");
         }
