@@ -17,8 +17,7 @@ namespace FiveZ.Server
         public Main()
         {
             _instance = this;
-            Loader.Init();
-        }
+            Loader.Init();        }
 
         public void RegisterEventHandler(string _event, Delegate _action)
         {

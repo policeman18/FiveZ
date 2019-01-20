@@ -1,5 +1,6 @@
 ﻿using System;
 using CitizenFX.Core;
+using FiveZ.Server.Classes;
 using FiveZ.Shared.Enums;
 
 namespace FiveZ.Server.Models
@@ -14,23 +15,29 @@ namespace FiveZ.Server.Models
 
     public class User
     {
-        public int Id { get; }
+        public int Id { get; set; }
         public string Name { get; set; }
-        public IdentifierCollection Identifiers { get; protected set; }
+        public string Identifier { get; protected set; }
         public Permission PermissionFlag { get; protected set; }
         public BanStatus BanData { get; protected set; }
         public bool IsWhitelisted { get; protected set; }
         public DateTime LastPlayed { get; protected set; }
 
-        public User(Player _player)
+        public User CreatePlayerUser(Player _player)
         {
-            
+            this.Name = _player.Name;
+            this.Identifier = _player.Identifiers["license"];
+            this.PermissionFlag = Permission.User;
+            this.BanData = new BanStatus();
+            this.IsWhitelisted = false;
+            this.LastPlayed = DateTime.Now;
+            return this;
         }
 
         public void SetPermission(Permission _perm)
         {
             this.PermissionFlag = _perm;
-            // Update
+            Database.UpdatePlayerUser(this);
         }
 
         public void SetBan(Player _player, string _reason, string _banType, int _banCount, string _bannerName)
@@ -61,19 +68,20 @@ namespace FiveZ.Server.Models
             }
             this.BanData.BanTime = banTime;
             this.BanData.BannedBy = _bannerName;
-            // Update
+            Database.UpdatePlayerUser(this);
+            SessionManager.Sessions.Find(s => s.User.Id == this.Id).Drop($"You have been banned from the server until {this.BanData.BanTime}");
         }
 
         public void SetWhitelisted(bool _status)
         {
             this.IsWhitelisted = _status;
-            // Update
+            Database.UpdatePlayerUser(this);
         }
 
         public void SetLastPlayed()
         {
             this.LastPlayed = DateTime.Now;
-            // Update
+            Database.UpdatePlayerUser(this);
         }
     }
 }

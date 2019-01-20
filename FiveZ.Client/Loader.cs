@@ -10,6 +10,7 @@ namespace FiveZ.Client
             Utils.WriteLine("Loading Classes...");
 
             new SessionManager();
+            new RemoveAI();
 
             Utils.WriteLine("Classes Loaded!");
         }

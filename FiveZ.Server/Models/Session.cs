@@ -20,25 +20,22 @@ namespace FiveZ.Server.Models
         
         public List<Character> Characters { get; protected set; }
 
-        public Session(Player _player)
+        public void Initialize(Player _player)
         {
             this.Player = _player;
 
-            User foundUser = Database.GetPlayerUser(_player);
-            if (foundUser == null)
+            Tuple<bool, User> user = Database.GetPlayerUser(_player);
+            if (user.Item1 == false)
             {
-                User newUser = Database.CreatePlayerUser(_player);
-                this.User = newUser;
+                User createdUser = Database.CreatePlayerUser(_player);
+                this.User = createdUser;
             }
             else
             {
-                this.User = foundUser;
+                this.User = user.Item2;
             }
-            Utils.WriteLine($"USER FOUND: {JsonConvert.SerializeObject(foundUser)}");
-        }
 
-        public void Initialize()
-        {
+            this.User.SetLastPlayed();
             SessionManager.Sessions.Add(this);
         }
 
