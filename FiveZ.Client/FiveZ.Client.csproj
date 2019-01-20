@@ -54,7 +54,9 @@
   <ItemGroup>
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\RemoveAI.cs" />
+    <Compile Include="Classes\RemoveDispatch.cs" />
     <Compile Include="Classes\SessionManager.cs" />
+    <Compile Include="Classes\SpawnManager.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

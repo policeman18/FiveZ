@@ -9,6 +9,7 @@ namespace FiveZ.Server
         {
             Utils.WriteLine("Loading Classes...");
 
+            new ConnectionManager();
             new SessionManager();
 
             Utils.WriteLine("Classes Loaded!");

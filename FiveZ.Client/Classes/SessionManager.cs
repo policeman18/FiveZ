@@ -10,6 +10,7 @@ namespace FiveZ.Client.Classes
         public SessionManager()
         {
             Main.GetInstance().RegisterEventHandler("onClientResourceStart", new Action<string>(ClientResourceStarted));
+            Main.GetInstance().RegisterEventHandler("FiveZ:EnableCharacterScreen", new Action<string>(EnableCharacterScreen));
             Utils.WriteLine("SessionManager Loaded");
         }
 
@@ -19,6 +20,11 @@ namespace FiveZ.Client.Classes
             {
                 Main.TriggerServerEvent("FiveZ:CreateSession");
             }
+        }
+
+        private void EnableCharacterScreen(string _characters)
+        {
+
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CitizenFX.Core.Native;
 using CitizenFX.Core;
+using FiveZ.Shared;
 
 namespace FiveZ.Client.Classes
 {
@@ -9,6 +10,7 @@ namespace FiveZ.Client.Classes
         public RemoveAI()
         {
             Main.GetInstance().RegisterTickHandler(OnTick);
+            Utils.WriteLine("RemoveAI Loaded");
         }
 
         private async Task OnTick()

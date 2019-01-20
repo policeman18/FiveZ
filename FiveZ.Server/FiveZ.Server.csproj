@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ConnectionManager.cs" />
     <Compile Include="Classes\SessionManager.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Loader.cs" />

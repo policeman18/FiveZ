@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CitizenFX.Core;
+using CitizenFX.Core.Native;
+using Newtonsoft.Json;
 using FiveZ.Shared;
 
 namespace FiveZ.Client
@@ -91,6 +93,14 @@ namespace FiveZ.Client
             {
                 Utils.Throw(ex);
             }
+        }
+
+        public void Send(string _type, string _data = null) => API.SendNuiMessage(JsonConvert.SerializeObject(new { _type, _data }));
+
+        public void RegisterCallback(string _type, Action<dynamic, CallbackDelegate> _callback)
+        {
+            API.RegisterNuiCallbackType(_type);
+            RegisterEventHandler($"__cfx_nui:{_type}", _callback);
         }
     }
 }
