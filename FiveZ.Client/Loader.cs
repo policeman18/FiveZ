@@ -1,4 +1,6 @@
 ﻿using FiveZ.Client.Classes;
+using FiveZ.Client.Classes.Managers;
+using FiveZ.Client.Classes.Player;
 using FiveZ.Shared;
 
 namespace FiveZ.Client

@@ -3,7 +3,7 @@ using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using FiveZ.Shared;
 
-namespace FiveZ.Client.Classes
+namespace FiveZ.Client.Classes.Player
 {
     public class RemoveDispatch
     {

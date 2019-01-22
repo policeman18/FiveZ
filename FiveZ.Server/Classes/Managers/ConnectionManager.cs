@@ -4,7 +4,7 @@ using CitizenFX.Core;
 using FiveZ.Server.Models;
 using FiveZ.Shared;
 
-namespace FiveZ.Server.Classes
+namespace FiveZ.Server.Classes.Managers
 {
     public class ConnectionManager
     {

@@ -3,7 +3,7 @@ using CitizenFX.Core.Native;
 using CitizenFX.Core;
 using FiveZ.Shared;
 
-namespace FiveZ.Client.Classes
+namespace FiveZ.Client.Classes.Player
 {
     public class RemoveAI
     {

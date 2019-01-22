@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Threading.Tasks;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
@@ -95,9 +96,14 @@ namespace FiveZ.Client
             }
         }
 
-        public void Send(string _type, string _data = null) => API.SendNuiMessage(JsonConvert.SerializeObject(new { _type, _data }));
+        public void SetNuiFocus(bool _focus, bool _cursor)
+        {
+            API.SetNuiFocus(_focus, _cursor);
+        }
 
-        public void RegisterCallback(string _type, Action<dynamic, CallbackDelegate> _callback)
+        public void SendNUIData(string type, string name, string data = null) => API.SendNuiMessage(JsonConvert.SerializeObject(new { type, name, data }));
+
+        public void RegisterNUICallback(string _type, Action<ExpandoObject, CallbackDelegate> _callback)
         {
             API.RegisterNuiCallbackType(_type);
             RegisterEventHandler($"__cfx_nui:{_type}", _callback);

@@ -13,7 +13,7 @@ namespace FiveZ.Shared
 
         public static void Throw(Exception ex)
         {
-            Debug.WriteLine($"^1[FiveZ Exception]: {ex.Message}^0");
+            Debug.WriteLine($"^1[FiveZ Exception]: {ex.Message} | {ex.StackTrace}^0");
         }
 
     }

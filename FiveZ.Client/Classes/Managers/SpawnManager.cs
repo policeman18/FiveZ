@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FiveZ.Client.Classes
+namespace FiveZ.Client.Classes.Managers
 {
     public class SpawnManager
     {

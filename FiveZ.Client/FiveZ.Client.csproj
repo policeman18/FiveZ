@@ -53,10 +53,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Helpers.cs" />
-    <Compile Include="Classes\RemoveAI.cs" />
-    <Compile Include="Classes\RemoveDispatch.cs" />
-    <Compile Include="Classes\SessionManager.cs" />
-    <Compile Include="Classes\SpawnManager.cs" />
+    <Compile Include="Classes\Player\RemoveAI.cs" />
+    <Compile Include="Classes\Player\RemoveDispatch.cs" />
+    <Compile Include="Classes\Managers\SessionManager.cs" />
+    <Compile Include="Classes\Managers\SpawnManager.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
