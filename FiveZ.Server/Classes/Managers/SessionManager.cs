@@ -28,6 +28,7 @@ namespace FiveZ.Server.Classes.Managers
 
             // Testing Character Stuff
             Session testing = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            //testing.CreateUserCharacter("Testing", "User", Shared.Enums.Genders.Male);
         }
 
         public void DeinitializeSession([FromSource] Player _player, string _reason)

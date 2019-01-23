@@ -1,0 +1,59 @@
+<html>
+	<head>
+		<title>FiveZ Interface</title>
+		<!-- Style Libraries -->
+		<link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons'>
+		<link rel="stylesheet" href="./assets/libraries/vuetify.min.css">
+		<!-- Styles -->
+		<link rel="stylesheet" href="./styles/character.css">
+		<style>
+			html {
+				background-color: transparent !important;
+				overflow-x: hidden;
+				overflow-y: hidden;
+				font-family: Verdana, Geneva, Tahoma, sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+
+		<!-- Character App -->
+		<v-app id="FiveZ_Character" v-show="ShowMenu">
+			<v-content>
+				<div id="FiveZ_Character_Base">
+					<div id="FiveZ_Character_Header">
+						FiveZ<br /><v-btn rounded small color="orange" dark><v-icon>add</v-icon></v-btn>
+					</div>
+					<div id="FiveZ_Character_Body">
+						<v-container grid-list-xs>
+							<v-layout row wrap>
+								<v-flex xs4 v-for="(character, charIndex) in Characters" :key="charIndex">
+									<v-card dark>
+										<v-card-title primary-title>
+											{{ character.FirstName }} {{ character.LastName }}
+										</v-card-title>
+										<v-card-text>
+											<span>Gender: {{ Genders[character.Gender] }}</span>
+										</v-card-text>
+										<v-card-actions>
+											<v-btn color="green" block :loading="Updating" @click="SelectCharacter(character.Id)"><v-icon>check</v-icon></v-btn>
+											<v-btn color="red" block :loading="Updating" @click="DeleteCharacter(character.Id)"><v-icon>delete</v-icon></v-btn>
+										</v-card-actions>
+									</v-card>
+								</v-flex>
+							</v-layout>
+						</v-container>
+					</div>
+				</div>
+			</v-content>
+		</v-app>
+
+		<!-- Script Libraries -->
+		<script src="./assets/libraries/vue.min.js"></script>
+		<script src="./assets/libraries/vuetify.min.js"></script>
+		<script src="./assets/libraries/axios.min.js"></script>
+		<!-- Scripts -->
+		<script src="./scripts/listener.js"></script>
+		<script src="./scripts/character.js"></script>
+	</body>
+</html>
