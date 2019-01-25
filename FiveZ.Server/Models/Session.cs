@@ -23,6 +23,7 @@ namespace FiveZ.Server.Models
         public void Drop(string _reason) => API.DropPlayer(this.Player.Handle, _reason);
 
         public List<Character> Characters { get; protected set; } = new List<Character>();
+        public Character Character { get; protected set; }
 
         public void Initialize(Player _player)
         {
@@ -137,7 +138,14 @@ namespace FiveZ.Server.Models
                 using (LiteDatabase db = new LiteDatabase(Database.DBPath))
                 {
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
-                    characters.Insert(new Character() { UserId = this.User.Id, FirstName = _firstName, LastName = _lastName, Gender = _gender });
+                    characters.Insert(new Character() {
+                        UserId = this.User.Id,
+                        FirstName = _firstName,
+                        LastName = _lastName,
+                        isNew = true,
+                        LastPos = new float[] { 0f, 0f, 0f },
+                        Gender = _gender
+                    });
                     IEnumerable<Character> allCharacters = characters.Find(ac => ac.UserId == this.User.Id);
                     return allCharacters.ToList();
                 }
@@ -154,10 +162,23 @@ namespace FiveZ.Server.Models
 
         } // ND
 
-        public void SelectUserCharacter()
+        public void SelectUserCharacter(int _charID)
         {
-
-        } // ND
+            try
+            {
+                using (LiteDatabase db = new LiteDatabase(Database.DBPath))
+                {
+                    LiteCollection<Character> characters = db.GetCollection<Character>("characters");
+                    Character foundCharacter = characters.FindOne(c => c.Id == _charID);
+                    this.Character = foundCharacter;
+                    this.Player.TriggerEvent("FiveZ:HandlePlayerSpawn", JsonConvert.SerializeObject(foundCharacter));
+                }
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+            }
+        }
             
         public List<Character> DeleteUserCharacter(int _charID)
         {

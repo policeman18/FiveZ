@@ -18,6 +18,8 @@ namespace FiveZ.Server.Classes.Managers
             Main.GetInstance().RegisterEventHandler("FiveZ:CreateSession", new Action<Player>(CreateSession));
             Main.GetInstance().RegisterEventHandler("playerDropped", new Action<Player, string>(DeinitializeSession));
             Main.GetInstance().RegisterEventHandler("FiveZ:DeleteCharacter", new Action<Player, int>(DeleteCharacter));
+            Main.GetInstance().RegisterEventHandler("FiveZ:CreateCharacter", new Action<Player, string, string, int>(CreateCharacter));
+            Main.GetInstance().RegisterEventHandler("FiveZ:SelectCharacter", new Action<Player, int>(SelectCharacter));
             Utils.WriteLine("SessionManager Loaded");
         }
 
@@ -44,6 +46,26 @@ namespace FiveZ.Server.Classes.Managers
             {
                 List<Character> newList = playersession.DeleteUserCharacter(_charID);
                 playersession.Player.TriggerEvent("FiveZ:UpdateCharacterScreen", JsonConvert.SerializeObject(newList));
+            }
+        }
+
+        public void CreateCharacter([FromSource] Player _player, string _first, string _last, int _gender)
+        {
+            Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (playersession != null)
+            {
+                List<Character> newList = playersession.CreateUserCharacter(_first, _last, (Shared.Enums.Genders)_gender);
+                playersession.Player.TriggerEvent("FiveZ:UpdateCharacterScreen", JsonConvert.SerializeObject(newList));
+            }
+        }
+
+        public void SelectCharacter([FromSource] Player _player, int _charID)
+        {
+            // Do Stuff
+            Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (playersession != null)
+            {
+                playersession.SelectUserCharacter(_charID);
             }
         }
 

@@ -14,6 +14,7 @@ namespace FiveZ.Client
             new SessionManager();
             new RemoveAI();
             new RemoveDispatch();
+            new SpawnManager();
 
             Utils.WriteLine("Classes Loaded!");
         }

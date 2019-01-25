@@ -10,11 +10,12 @@ namespace FiveZ.Shared.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Genders Gender { get; set; }
+        public bool isNew { get; set; }
+        public float[] LastPos { get; set; }
         // Add Character Looks
         // Add Clothing
         // Add Props
         //public Skills Skills { get; set; }
-        //public float[] LastPos { get; set; }
         //public List<Item> Inventory { get; set; }
     }
 }
