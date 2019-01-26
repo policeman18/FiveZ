@@ -15,12 +15,19 @@ namespace FiveZ.Client.Classes.Managers
             // Events
             Main.GetInstance().RegisterEventHandler("FiveZ:HandlePlayerSpawn", new Action<string>(HandlePlayerSpawn));
 
-            // Exports
-            Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer();
-            Main.GetInstance().CallExport()["spawnmanager"].setAutoSpawn(false);
-
             // Commands
-            CitizenFX.Core.Native.API.RegisterCommand("revive", new Action<int, List<object>, string>(Revive), false);
+            API.RegisterCommand("revive", new Action<int, List<object>, string>(Revive), false);
+
+            // Disable Respawning
+            DisableAutoRespawning();
+        }
+
+        public async void DisableAutoRespawning()
+        {
+            await BaseScript.Delay(5000);
+            //Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer();
+            Main.GetInstance().CallExport()["spawnmanager"].setAutoSpawn(false);
+            CitizenFX.Core.UI.Screen.ShowNotification("~r~Automatic Respawning Disabled");
         }
 
         // Remove Later When Doing The Revive / Medical System

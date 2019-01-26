@@ -9,7 +9,10 @@ document.onreadystatechange = () => {
 					switch(event.data.name) {
 						case "OpenMenu":
 							FiveZ_Character.OpenMenu(event.data.data);
-						break;
+                            break;
+                        case "CloseMenu":
+                            FiveZ_Character.CloseMenu(event.data.data);
+                            break;
 						case "UpdateCharacters":
 							FiveZ_Character.UpdateCharacters(event.data.data);
 						break;
@@ -20,8 +23,8 @@ document.onreadystatechange = () => {
 				break;
 
 				// Default Catcher
-				default:
-					if (event.data.type != "message") {
+                default:
+                    if (event.data.type != "message") {
 						console.log(`Couldn't Find Event Type: ${event.data.type}`);
 					}
 				break;

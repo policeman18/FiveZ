@@ -8,11 +8,24 @@ const FiveZ_Character = new Vue({
 
 	data: {
 		ResourceName: "fivez",
-		ShowMenu: true,
+        ShowMenu: false,
+        ShowCreator: false,
 		Updating: false,
         Characters: [
             //{ FirstName: "Xander", LastName: "Harrison", Gender: 0 }
-        ]
+        ],
+        NewCharacterValid: false,
+        NewCharacterData: { FirstName: "", LastName: "", Gender: 0 },
+        NewCharacterFormRules: {
+            NameRules: [
+                v => !!v || "Name is required",
+                v => (v && v.length <= 20) || "Name must be less than 10 characters",
+                v => (v && v.length > 2) || "Name must be greater than 2 characters"
+            ],
+            GenderRules: [
+                v => !!v || "Gender is required"
+            ]
+        }
 	},
 
 	methods: {
@@ -21,19 +34,36 @@ const FiveZ_Character = new Vue({
 			this.Characters = JSON.parse(chars);
 		},
 
+        CloseMenu() {
+            this.ShowMenu = false;
+        },
+
 		CreateCharacter() {
-			
-		},
+            if (this.$refs.creatorform.validate()) {
+                axios.post(`http://${this.ResourceName}/fivez_character_createcharacter`, {
+                    first: this.NewCharacterData.FirstName,
+                    last: this.NewCharacterData.LastName,
+                    gender: this.NewCharacterData.Gender
+                }).then((response) => { }).catch((error) => { console.log(error); });
+                this.Updating = true;
+                this.CloseCreator();
+            }
+        },
 
-		SelectCharacter() {
+        CloseCreator() {
+            this.ShowCreator = false;
+            this.$refs.creatorform.reset();
+        },
 
-		},
+		SelectCharacter(_id) {
+            axios.post(`http://${this.ResourceName}/fivez_character_selectcharacter`, { id: _id }).then((response) => { }).catch((error) => { console.log(error) });
+            this.CloseCreator();
+        },
 
 		DeleteCharacter(_id) {
-			axios.post(`http://${this.ResourceName}/fivez_character_deletecharacter`, {id: _id}).then((response) => {
-				this.Updating = true;
-			}).catch((error) => { console.log(error) });
-		},
+			axios.post(`http://${this.ResourceName}/fivez_character_deletecharacter`, {id: _id}).then((response) => {}).catch((error) => { console.log(error) });
+            this.Updating = true;
+        },
 
 		UpdateCharacters(chars) {
 			this.Characters = JSON.parse(chars);
