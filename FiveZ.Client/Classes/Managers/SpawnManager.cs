@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using Newtonsoft.Json;
+using FiveZ.Client.Menus;
 using FiveZ.Shared.Models;
 using System.Dynamic;
 
@@ -25,31 +26,45 @@ namespace FiveZ.Client.Classes.Managers
         public async void DisableAutoRespawning()
         {
             await BaseScript.Delay(5000);
-            //Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer();
             Main.GetInstance().CallExport()["spawnmanager"].setAutoSpawn(false);
-            CitizenFX.Core.UI.Screen.ShowNotification("~r~Automatic Respawning Disabled");
         }
 
         // Remove Later When Doing The Revive / Medical System
         public void Revive(int _source, List<object> _args, string _raw)
         {
-            if (CitizenFX.Core.Game.Player.Character.IsDead)
+            if (Game.Player.Character.IsDead)
             {
-                CitizenFX.Core.Game.Player.Character.Resurrect();
+                Game.Player.Character.Resurrect();
             }
         }
 
         public async void HandlePlayerSpawn(string _character)
         {
             Character chardata = JsonConvert.DeserializeObject<Character>(_character);
+            dynamic spawnData = new ExpandoObject();
             if (chardata.isNew)
             {
-                // Open Modifier Menu
-                Debug.WriteLine("NEW CHARACTER DETECTED");
+                CharacterModifier.EnableCharacterModifier(chardata.Gender);
+                spawnData.x = 403.009f;
+                spawnData.y = -996.653f;
+                spawnData.z = -99.0003f;
+                if (chardata.Gender == Shared.Enums.Genders.Male)
+                {
+                    spawnData.model = API.GetHashKey("mp_m_freemode_01");
+                }
+                else
+                {
+                    spawnData.model = API.GetHashKey("mp_f_freemode_01");
+                }
+                Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer(spawnData);
+                await BaseScript.Delay(1000);
+                Game.Player.Character.Heading = 179.8418f;
+                API.SetPedDefaultComponentVariation(Game.Player.Character.Handle);
+                World.RenderingCamera = null;
+                Main.GetInstance().SetNuiFocus(false, false);
             }
             else
             {
-                dynamic spawnData = new ExpandoObject();
                 spawnData.x = chardata.LastPos[0];
                 spawnData.y = chardata.LastPos[1];
                 spawnData.z = chardata.LastPos[2];

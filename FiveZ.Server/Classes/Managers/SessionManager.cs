@@ -20,6 +20,7 @@ namespace FiveZ.Server.Classes.Managers
             Main.GetInstance().RegisterEventHandler("FiveZ:DeleteCharacter", new Action<Player, int>(DeleteCharacter));
             Main.GetInstance().RegisterEventHandler("FiveZ:CreateCharacter", new Action<Player, string, string, int>(CreateCharacter));
             Main.GetInstance().RegisterEventHandler("FiveZ:SelectCharacter", new Action<Player, int>(SelectCharacter));
+            Main.GetInstance().RegisterEventHandler("FiveZ:Disconnect", new Action<Player>(Disconnect));
             Utils.WriteLine("SessionManager Loaded");
         }
 
@@ -66,6 +67,15 @@ namespace FiveZ.Server.Classes.Managers
             if (playersession != null)
             {
                 playersession.SelectUserCharacter(_charID);
+            }
+        }
+
+        private void Disconnect([FromSource] Player _player)
+        {
+            Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (playersession != null)
+            {
+                playersession.Drop("Disconnected");
             }
         }
 

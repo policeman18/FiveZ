@@ -1,6 +1,7 @@
 ﻿using FiveZ.Client.Classes;
 using FiveZ.Client.Classes.Managers;
 using FiveZ.Client.Classes.Player;
+using FiveZ.Client.Menus;
 using FiveZ.Shared;
 
 namespace FiveZ.Client
@@ -11,10 +12,17 @@ namespace FiveZ.Client
         {
             Utils.WriteLine("Loading Classes...");
 
+            // Managers
             new SessionManager();
+            new SpawnManager();
+            
+            // Player
             new RemoveAI();
             new RemoveDispatch();
-            new SpawnManager();
+            new RemoveHealthRegen();
+
+            // Menus
+            new CharacterModifier();
 
             Utils.WriteLine("Classes Loaded!");
         }

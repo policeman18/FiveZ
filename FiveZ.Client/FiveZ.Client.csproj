@@ -57,8 +57,10 @@
     <Compile Include="Classes\Player\RemoveDispatch.cs" />
     <Compile Include="Classes\Managers\SessionManager.cs" />
     <Compile Include="Classes\Managers\SpawnManager.cs" />
+    <Compile Include="Classes\Player\RemoveHealthRegen.cs" />
     <Compile Include="Loader.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="Menus\CharacterModifier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
-    <Folder Include="Menus\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -19,6 +19,7 @@ namespace FiveZ.Client.Classes.Managers
             Main.GetInstance().RegisterNUICallback("fivez_character_deletecharacter", DeleteCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_selectcharacter", SelectCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_createcharacter", CreateCharacter);
+            Main.GetInstance().RegisterNUICallback("fivez_disconnect", Disconnect);
 
             Utils.WriteLine("SessionManager Loaded");
         }
@@ -66,6 +67,11 @@ namespace FiveZ.Client.Classes.Managers
         private void CreateCharacter(dynamic data, CallbackDelegate _callback)
         {
             Main.TriggerServerEvent("FiveZ:CreateCharacter", data.first, data.last, data.gender);
+        }
+        
+        private void Disconnect(dynamic data, CallbackDelegate _callback)
+        {
+            Main.TriggerServerEvent("FiveZ:Disconnect");
         }
 
     }
