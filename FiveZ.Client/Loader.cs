@@ -2,7 +2,6 @@
 using FiveZ.Client.Classes.Managers;
 using FiveZ.Client.Classes.Player;
 using FiveZ.Client.Menus;
-using FiveZ.Shared;
 
 namespace FiveZ.Client
 {

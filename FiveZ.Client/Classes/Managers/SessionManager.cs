@@ -1,7 +1,7 @@
 ﻿using System;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
-using FiveZ.Shared;
+using CitizenFX.Core.UI;
 
 namespace FiveZ.Client.Classes.Managers
 {
@@ -20,21 +20,21 @@ namespace FiveZ.Client.Classes.Managers
             Main.GetInstance().RegisterNUICallback("fivez_character_selectcharacter", SelectCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_createcharacter", CreateCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_disconnect", Disconnect);
-
-            Utils.WriteLine("SessionManager Loaded");
         }
 
         private void ClientResourceStarted(string _resource)
         {
             if (API.GetCurrentResourceName() == _resource)
             {
+                Language clientlanguage = (Language)API.GetCurrentLanguageId();
+                Debug.WriteLine($"Language: {clientlanguage}");
                 Main.TriggerServerEvent("FiveZ:CreateSession");
             }
         }
 
         private async void EnableCharacterScreen(string _characters)
         {
-            CitizenFX.Core.UI.Screen.Fading.FadeOut(0);
+            Screen.Fading.FadeOut(0);
             await BaseScript.Delay(300);
             Main.GetInstance().SetNuiFocus(true, true);
             Main.GetInstance().SendNUIData("fivez_character", "OpenMenu", _characters);
@@ -42,8 +42,8 @@ namespace FiveZ.Client.Classes.Managers
             Game.Player.Character.IsInvincible = true;
             Camera cam = World.CreateCamera(new Vector3(0f, 1500f, 500f), Vector3.Zero, 50);
             World.RenderingCamera = cam;
-            CitizenFX.Core.UI.Screen.Hud.IsRadarVisible = false;
-            CitizenFX.Core.UI.Screen.Fading.FadeIn(0);
+            Screen.Hud.IsRadarVisible = false;
+            Screen.Fading.FadeIn(0);
         }
 
         private void UpdateCharacterScreen(string _characters)
@@ -61,7 +61,7 @@ namespace FiveZ.Client.Classes.Managers
             Main.TriggerServerEvent("FiveZ:SelectCharacter", data.id);
             Main.GetInstance().SendNUIData("fivez_character", "CloseMenu");
             Main.GetInstance().SetNuiFocus(true, false);
-            CitizenFX.Core.UI.Screen.Fading.FadeOut(0);
+            Screen.Fading.FadeOut(0);
         }
 
         private void CreateCharacter(dynamic data, CallbackDelegate _callback)

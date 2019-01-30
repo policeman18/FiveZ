@@ -5,7 +5,6 @@ using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using Newtonsoft.Json;
 using FiveZ.Server.Classes.Managers;
-using FiveZ.Shared;
 using FiveZ.Shared.Models;
 using FiveZ.Shared.Enums;
 using LiteDB;

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CitizenFX.Core;
 using Newtonsoft.Json;
 using FiveZ.Server.Models;
-using FiveZ.Shared;
 using FiveZ.Shared.Models;
 
 namespace FiveZ.Server.Classes.Managers

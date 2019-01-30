@@ -2,7 +2,6 @@
 using System.Dynamic;
 using CitizenFX.Core;
 using FiveZ.Server.Models;
-using FiveZ.Shared;
 
 namespace FiveZ.Server.Classes.Managers
 {
@@ -15,7 +14,6 @@ namespace FiveZ.Server.Classes.Managers
         public ConnectionManager()
         {
             Main.GetInstance().RegisterEventHandler("playerConnecting", new Action<Player, string, CallbackDelegate, ExpandoObject>(PlayerConnecting));
-            Utils.WriteLine("ConnectionManager Loaded");
         }
 
         private async void PlayerConnecting([FromSource] Player _player, string _playerName, dynamic _setKickReason, dynamic _deferrals)

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using Newtonsoft.Json;
-using FiveZ.Shared;
 
 namespace FiveZ.Client
 {

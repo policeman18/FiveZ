@@ -12,26 +12,106 @@ namespace FiveZ.Client.Menus
     public class CharacterModifier
     {
 
+        // Menus
         private static Menu Menu = new Menu("FiveZ", "Character Editor");
-        private static Menu Parents = new Menu("FiveZ", "Parent Blend");
-        private static Menu Appearamce = new Menu("FiveZ", "Appearance");
-        private static Menu FaceShape = new Menu("FiveZ", "Face Shape");
+        private static MenuItem ParentsMenuButton = new MenuItem("Parents Menu");
+        private static MenuItem ShapeMenuButton = new MenuItem("Shape Menu");
+        private static MenuItem AppearanceMenuButton = new MenuItem("Appearance Menu");
+        private static MenuItem FinishEditingButton = new MenuItem("~g~Finish Character", "~r~REMINDER! You are only allowed to set this once!!!");
 
-        public CharacterModifier()
-        {
-            // Nothing Yet. Can probably remove this later.
-        }
+        // Parents Menu
+        private static int FatherFace = 0;
+        private static int MotherFace = 0;
+        private static float ParentMix = 0f;
+
+        private static Menu ParentsMenu = new Menu("FiveZ", "Parent Blend");
+        private static MenuSliderItem ParentFatherFace = new MenuSliderItem("Fathers Face", 0, 45, 0);
+        private static MenuSliderItem ParentMotherFace = new MenuSliderItem("Mothers Face", 0, 45, 0);
+        private static MenuSliderItem ParentsMenuMixBar = new MenuSliderItem("Parent Mix", 0, 10, 5) { ShowDivider = true };
+
+        // Appearance Menu
+        private static int HairStyle = 0;
+        private static int HairColor = 0;
+
+        private static MenuSliderItem AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 10, 0);
+        private static MenuSliderItem AppearanceHairColors = new MenuSliderItem("Hair Colors", 0, 0, 0);
+
+        private static Menu AppearanceMenu = new Menu("FiveZ", "Appearance");
+
+        // Shape Menu
+        private static Menu ShapeMenu = new Menu("FiveZ", "Face Shape");
 
         public static async void EnableCharacterModifier(Genders _gender)
         {
+            // Menu Settings
             MenuController.MenuAlignment = MenuController.MenuAlignmentOption.Left;
             MenuController.MenuToggleKey = (Control)(-1);
+
+            // Generate Menu
             MenuController.AddMenu(Menu);
+            Menu.AddMenuItem(ParentsMenuButton); MenuController.AddSubmenu(Menu, ParentsMenu); MenuController.BindMenuItem(Menu, ParentsMenu, ParentsMenuButton);
+            Menu.AddMenuItem(ShapeMenuButton); MenuController.AddSubmenu(Menu, ShapeMenu); MenuController.BindMenuItem(Menu, ShapeMenu, ShapeMenuButton);
+            Menu.AddMenuItem(AppearanceMenuButton); MenuController.AddSubmenu(Menu, AppearanceMenu); MenuController.BindMenuItem(Menu, AppearanceMenu, AppearanceMenuButton);            Menu.AddMenuItem(FinishEditingButton);
+
+            // Generate Parents Menu
+            ParentsMenu.AddMenuItem(ParentFatherFace);
+            ParentsMenu.AddMenuItem(ParentMotherFace);
+            ParentsMenu.AddMenuItem(ParentsMenuMixBar);
+            ParentsMenu.OnSliderPositionChange += (_menu, _sliderItem, _oldPosition, _newPosition, _itemIndex) =>
+            {
+                if (_sliderItem == ParentFatherFace)
+                {
+                    FatherFace = _newPosition;
+                    SetPedBlendData();
+                }
+                else if (_sliderItem == ParentMotherFace)
+                {
+                    MotherFace = _newPosition;
+                    SetPedBlendData();
+                }
+                else if (_sliderItem == ParentsMenuMixBar)
+                {
+                    ParentMix = (float)((_newPosition / 10m) * 1m);
+                    SetPedBlendData();
+                }
+            };
+
+            // Generate Appearance Menu
+            if (Game.Player.Character.Gender == Gender.Male)
+            {
+                AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 22, 0);
+            }
+            else
+            {
+                AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 23, 0);
+            }
+            AppearanceMenu.AddMenuItem(AppearanceHairStyles);
+            AppearanceMenu.AddMenuItem(AppearanceHairColors);
+            AppearanceMenu.OnSliderPositionChange += (_menu, _sliderItem, _oldPosition, _newPosition, _itemIndex) =>
+            {
+                if (_sliderItem == AppearanceHairStyles)
+                {
+                    HairStyle = _newPosition;
+                    Game.Player.Character.Style[PedComponents.Hair].SetVariation(HairStyle, HairColor);
+                    AppearanceMenu.RemoveMenuItem(AppearanceHairColors);
+                    AppearanceHairColors = new MenuSliderItem("Hair Colors", 0, Game.Player.Character.Style[PedComponents.Hair].TextureCount, 0);
+                    AppearanceMenu.AddMenuItem(AppearanceHairColors);
+                    HairColor = 0;
+                }
+                else if (_sliderItem == AppearanceHairColors)
+                {
+                    HairColor = _newPosition;
+                    Game.Player.Character.Style[PedComponents.Hair].SetVariation(0, 0);
+                    Game.Player.Character.Style[PedComponents.Hair].SetVariation(HairStyle, HairColor);
+                }
+            };
+
+            // Generate Shape Menu
+
+
+            // Character Setup
             Main.GetInstance().RegisterTickHandler(KeepMenuEnabled);
-
             await BaseScript.Delay(2000);
-
-            // Set Default Clothing
             if (_gender == Genders.Male)
             {
                 Game.Player.Character.Style[PedComponents.Torso].SetVariation(0, 0);
@@ -48,6 +128,10 @@ namespace FiveZ.Client.Menus
                 Game.Player.Character.Style[PedComponents.Special2].SetVariation(2, 0);
                 Game.Player.Character.Style[PedComponents.Shoes].SetVariation(5, 0);
             }
+
+            World.RenderingCamera = World.CreateCamera(Game.Player.Character.Position, new Vector3(0f, 0f, 0f), 30f);
+            await BaseScript.Delay(100);
+            World.RenderingCamera.AttachTo(Game.Player.Character.Bones[Bone.SKEL_Head], new Vector3(0f, 2f, 0.5f));
         }
 
         public static void DisableCharacterModifier()
@@ -57,14 +141,9 @@ namespace FiveZ.Client.Menus
             Menu.CloseMenu();
         }
 
-        private void SetInheritance()
-        {
-            //API.SetPedHeadBlendData(Game.Player.Character.Handle, )
-        }
-
         private static async Task KeepMenuEnabled()
         {
-            if (MenuController.GetCurrentMenu() != Menu)
+            if (!MenuController.IsAnyMenuOpen())
             {
                 Menu.OpenMenu();
             }
@@ -79,11 +158,17 @@ namespace FiveZ.Client.Menus
             Game.DisableControlThisFrame(0, Control.MoveLeft);
             Game.DisableControlThisFrame(0, Control.MoveRight);
 
-            //TestingClothingMethod();
+            //TestingClothingMethod(); // REMOVE LATER
             await Task.FromResult(0);
         }
 
-        public static void TestingClothingMethod()
+        private static void SetPedBlendData()
+        {
+            API.SetPedHeadBlendData(Game.Player.Character.Handle, FatherFace, MotherFace, 0, FatherFace, MotherFace, 0, ParentMix, ParentMix, 0f, true);
+        }
+
+        // REMOVE LATER
+        private static void TestingClothingMethod()
         {
             PedComponents c = PedComponents.Torso;
             int maxComponents = Game.Player.Character.Style[c].Count;

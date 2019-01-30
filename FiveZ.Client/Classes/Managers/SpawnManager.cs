@@ -13,14 +13,21 @@ namespace FiveZ.Client.Classes.Managers
     {
         public SpawnManager()
         {
-            // Events
-            Main.GetInstance().RegisterEventHandler("FiveZ:HandlePlayerSpawn", new Action<string>(HandlePlayerSpawn));
+            try
+            {
+                // Events
+                Main.GetInstance().RegisterEventHandler("FiveZ:HandlePlayerSpawn", new Action<string>(HandlePlayerSpawn));
 
-            // Commands
-            API.RegisterCommand("revive", new Action<int, List<object>, string>(Revive), false);
+                // Commands
+                API.RegisterCommand("revive", new Action<int, List<object>, string>(Revive), false);
 
-            // Disable Respawning
-            DisableAutoRespawning();
+                // Disable Respawning
+                DisableAutoRespawning();
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+            }
         }
 
         public async void DisableAutoRespawning()

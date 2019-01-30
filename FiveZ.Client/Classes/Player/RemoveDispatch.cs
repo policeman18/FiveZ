@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
-using FiveZ.Shared;
 
 namespace FiveZ.Client.Classes.Player
 {
@@ -11,7 +10,6 @@ namespace FiveZ.Client.Classes.Player
         {
             RemoveDispatched();
             Main.GetInstance().RegisterTickHandler(DisableWanted);
-            Utils.WriteLine("RemoveDispatch Loaded");
         }
 
         public void RemoveDispatched()

@@ -1,7 +1,6 @@
 ﻿using System;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
-using FiveZ.Shared;
 
 namespace FiveZ.Server
 {
@@ -17,7 +16,8 @@ namespace FiveZ.Server
         public Main()
         {
             _instance = this;
-            Loader.Init();        }
+            Loader.Init();
+        }
 
         public void RegisterEventHandler(string _event, Delegate _action)
         {
