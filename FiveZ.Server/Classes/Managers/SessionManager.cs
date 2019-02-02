@@ -29,14 +29,18 @@ namespace FiveZ.Server.Classes.Managers
             new Session().Initialize(_player);
 
             // Testing Character Stuff
-            Session testing = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            //Session testing = Sessions.Find(s => s.Player.Handle == _player.Handle);
             //testing.CreateUserCharacter("Testing", "User", Shared.Enums.Genders.Male);
         }
 
         public void DeinitializeSession([FromSource] Player _player, string _reason)
         {
-            Sessions.Find(s => s.Player.Handle == _player.Handle).Deinitialize();
-            Utils.WriteLine($"Player Dropped: {_player.Name} | {_reason}");
+            Session foundsession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (foundsession != null)
+            {
+                foundsession.Deinitialize();
+                Utils.WriteLine($"Player Dropped: {_player.Name} | {_reason}");
+            }
         }
 
         public void DeleteCharacter([FromSource] Player _player, int _charID)

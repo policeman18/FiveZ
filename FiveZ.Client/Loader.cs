@@ -12,6 +12,7 @@ namespace FiveZ.Client
             Utils.WriteLine("Loading Classes...");
 
             // Managers
+            new ConfigManager();
             new SessionManager();
             new SpawnManager();
             

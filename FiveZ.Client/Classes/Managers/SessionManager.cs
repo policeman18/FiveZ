@@ -32,18 +32,12 @@ namespace FiveZ.Client.Classes.Managers
             }
         }
 
-        private async void EnableCharacterScreen(string _characters)
+        private void EnableCharacterScreen(string _characters)
         {
-            Screen.Fading.FadeOut(0);
-            await BaseScript.Delay(300);
             Main.GetInstance().SetNuiFocus(true, true);
             Main.GetInstance().SendNUIData("fivez_character", "OpenMenu", _characters);
-            Game.Player.Character.IsVisible = false;
-            Game.Player.Character.IsInvincible = true;
-            Camera cam = World.CreateCamera(new Vector3(0f, 1500f, 500f), Vector3.Zero, 50);
-            World.RenderingCamera = cam;
             Screen.Hud.IsRadarVisible = false;
-            Screen.Fading.FadeIn(0);
+            World.RenderingCamera = World.CreateCamera(new Vector3(0f, 1500f, 500f), Vector3.Zero, 50);
         }
 
         private void UpdateCharacterScreen(string _characters)
@@ -61,7 +55,6 @@ namespace FiveZ.Client.Classes.Managers
             Main.TriggerServerEvent("FiveZ:SelectCharacter", data.id);
             Main.GetInstance().SendNUIData("fivez_character", "CloseMenu");
             Main.GetInstance().SetNuiFocus(true, false);
-            Screen.Fading.FadeOut(0);
         }
 
         private void CreateCharacter(dynamic data, CallbackDelegate _callback)

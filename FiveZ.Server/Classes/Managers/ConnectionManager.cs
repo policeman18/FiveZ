@@ -14,6 +14,7 @@ namespace FiveZ.Server.Classes.Managers
         public ConnectionManager()
         {
             Main.GetInstance().RegisterEventHandler("playerConnecting", new Action<Player, string, CallbackDelegate, ExpandoObject>(PlayerConnecting));
+            Utils.WriteLine("ConnectionManager Loaded");
         }
 
         private async void PlayerConnecting([FromSource] Player _player, string _playerName, dynamic _setKickReason, dynamic _deferrals)
@@ -25,13 +26,13 @@ namespace FiveZ.Server.Classes.Managers
                 await BaseScript.Delay(1000);
             }
 
-            Tuple<bool, User> foundUser = Database.GetPlayerUser(_player);
+            Tuple<bool, User> foundUser = new Session().GetPlayerUser(_player);
             if (!foundUser.Item1)
             {
 
                 if (isServerWhitlisted)
                 {
-                    Database.CreatePlayerUser(_player);
+                    new Session().CreatePlayerUser(_player);
                     _deferrals.done($"You are not whitelisted.");
                     return;
                 }

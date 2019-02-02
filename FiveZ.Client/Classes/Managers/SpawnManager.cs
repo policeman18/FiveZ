@@ -45,56 +45,47 @@ namespace FiveZ.Client.Classes.Managers
             }
         }
 
+
         public async void HandlePlayerSpawn(string _character)
         {
             Character chardata = JsonConvert.DeserializeObject<Character>(_character);
-            dynamic spawnData = new ExpandoObject();
             if (chardata.isNew)
             {
-                CharacterModifier.EnableCharacterModifier(chardata.Gender);
-                spawnData.x = 403.009f;
-                spawnData.y = -996.653f;
-                spawnData.z = -99.0003f;
-                if (chardata.Gender == Shared.Enums.Genders.Male)
-                {
-                    spawnData.model = API.GetHashKey("mp_m_freemode_01");
-                }
-                else
-                {
-                    spawnData.model = API.GetHashKey("mp_f_freemode_01");
-                }
-                Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer(spawnData);
-                await BaseScript.Delay(1000);
+                await Game.Player.ChangeModel(new Model(chardata.Model));
+                Vector3 CreatorPosition = new Vector3(403.009f, -996.653f, -99.0003f);
+                Game.Player.Character.Position = CreatorPosition;
                 Game.Player.Character.Heading = 179.8418f;
-                API.SetPedDefaultComponentVariation(Game.Player.Character.Handle);
-                World.RenderingCamera = null;
-                Main.GetInstance().SetNuiFocus(false, false);
+
+
+                // Set Clothing
+                Game.Player.Character.Style[PedComponents.Hair].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Hair)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Hair)][1]);
+                Game.Player.Character.Style[PedComponents.Torso].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Torso)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Torso)][1]);
+                Game.Player.Character.Style[PedComponents.Legs].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Legs)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Legs)][1]);
+                Game.Player.Character.Style[PedComponents.Hands].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Hands)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Hands)][1]);
+                Game.Player.Character.Style[PedComponents.Shoes].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Shoes)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Shoes)][1]);
+                Game.Player.Character.Style[PedComponents.Special1].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Special1)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Special1)][1]);
+                Game.Player.Character.Style[PedComponents.Special2].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Special2)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Special2)][1]);
+                Game.Player.Character.Style[PedComponents.Special3].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Special3)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Special3)][1]);
+                Game.Player.Character.Style[PedComponents.Textures].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Textures)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Textures)][1]);
+                Game.Player.Character.Style[PedComponents.Torso2].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Torso2)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Torso2)][1]);
+
+                // Set Appearance
+
+                CharacterModifier.EnableCharacterModifier();
             }
             else
             {
-                spawnData.x = chardata.LastPos[0];
-                spawnData.y = chardata.LastPos[1];
-                spawnData.z = chardata.LastPos[2];
-                if (chardata.Gender == Shared.Enums.Genders.Male)
-                {
-                    spawnData.model = API.GetHashKey("mp_m_freemode_01");
-                }
-                else
-                {
-                    spawnData.model = API.GetHashKey("mp_f_freemode_01");
-                }
-                Main.GetInstance().CallExport()["spawnmanager"].spawnPlayer(spawnData);
+                await Game.Player.ChangeModel(new Model(chardata.Model));
+                Vector3 SpawnPosition = new Vector3(chardata.LastPos[0], chardata.LastPos[1], chardata.LastPos[2]);
+                Game.Player.Character.Position = SpawnPosition;
+                Game.Player.Character.Heading = new Random().Next(0, 359);
 
-                World.RenderingCamera = null;
-                Main.GetInstance().SetNuiFocus(false, false);
-                await BaseScript.Delay(300);
-                Game.Player.Character.Style[PedComponents.Head].SetVariation(23, 1);
-                Game.Player.Character.IsVisible = true;
-                Game.Player.Character.IsInvincible = false;
-                // Set Player Looks
-                // Set Player Inventory
-                // Start Player Skills
+                // Set Clothing
+                // Set Inventiry
+                // Start Other Scripts
             }
+
+            Main.GetInstance().SetNuiFocus(false, false);
         }
     }
 }

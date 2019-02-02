@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Helpers.cs" />
+    <Compile Include="Classes\Managers\ConfigManager.cs" />
     <Compile Include="Classes\Player\RemoveAI.cs" />
     <Compile Include="Classes\Player\RemoveDispatch.cs" />
     <Compile Include="Classes\Managers\SessionManager.cs" />

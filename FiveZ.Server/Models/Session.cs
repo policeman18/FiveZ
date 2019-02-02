@@ -28,21 +28,25 @@ namespace FiveZ.Server.Models
         {
             SessionManager.Sessions.Add(this);
             this.Player = _player;
-
-            Tuple<bool, User> user = Database.GetPlayerUser(_player);
+            
+            Tuple<bool, User> user = this.GetPlayerUser(_player);
             if (user.Item1 == false)
             {
-                User createdUser = Database.CreatePlayerUser(_player);
+                User createdUser = this.CreatePlayerUser(_player);
                 this.User = createdUser;
             }
             else
             {
                 this.User = user.Item2;
-                this.Characters = Database.GetUserCharacters(_player);
+                this.Characters = this.GetUserCharacters(_player);
             }
 
             this.SetUserLastPlayed();
 
+            // Load Client Configs
+            this.Player.TriggerEvent("FiveZ:SendClientConfigs", "spawns", JsonConvert.SerializeObject(ConfigManager.SpawningConfig));
+
+            // Enable Main Screen
             this.Player.TriggerEvent("FiveZ:EnableCharacterScreen", JsonConvert.SerializeObject(this.Characters));
         }
 
@@ -52,15 +56,54 @@ namespace FiveZ.Server.Models
         }
 
         // User Methods
+        public Tuple<bool, User> GetPlayerUser(Player _player)
+        {
+            try
+            {
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
+                {
+                    LiteCollection<User> users = db.GetCollection<User>("users");
+                    User foundUser = users.FindOne(u => u.Identifier == _player.Identifiers["license"]);
+                    if (foundUser == null)
+                    {
+                        return Tuple.Create<bool, User>(false, null);
+                    }
+                    else
+                    {
+                        return Tuple.Create<bool, User>(true, foundUser);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+                return Tuple.Create<bool, User>(false, null);
+            }
+        }
+
         public User CreatePlayerUser(Player _player)
         {
-            this.User.Name = _player.Name;
-            this.User.Identifier = _player.Identifiers["license"];
-            this.User.PermissionFlag = Permission.User;
-            this.User.BanData = new BanStatus();
-            this.User.IsWhitelisted = false;
-            this.User.LastPlayed = DateTime.Now;
-            return this.User;
+            try
+            {
+                User newUser = new User();
+                newUser.Name = _player.Name;
+                newUser.Identifier = _player.Identifiers["license"];
+                newUser.PermissionFlag = Permission.User;
+                newUser.BanData = new BanStatus();
+                newUser.IsWhitelisted = false;
+                newUser.LastPlayed = DateTime.Now;
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
+                {
+                    LiteCollection<User> users = db.GetCollection<User>("users");
+                    users.Insert(newUser);
+                }
+                return this.User;
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+                return null;
+            }
         }
 
         public void SetUserLastPlayed()
@@ -117,7 +160,7 @@ namespace FiveZ.Server.Models
         {
             try
             {
-                using (LiteDatabase db = new LiteDatabase(Database.DBPath))
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
                     LiteCollection<User> users = db.GetCollection<User>("user");
                     users.Update(this.User);
@@ -134,17 +177,10 @@ namespace FiveZ.Server.Models
         {
             try
             {
-                using (LiteDatabase db = new LiteDatabase(Database.DBPath))
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
-                    characters.Insert(new Character() {
-                        UserId = this.User.Id,
-                        FirstName = _firstName,
-                        LastName = _lastName,
-                        isNew = true,
-                        LastPos = new float[] { 0f, 0f, 0f },
-                        Gender = _gender
-                    });
+                    characters.Insert(new Character(this.User.Id, _firstName, _lastName, _gender));
                     IEnumerable<Character> allCharacters = characters.Find(ac => ac.UserId == this.User.Id);
                     return allCharacters.ToList();
                 }
@@ -156,16 +192,35 @@ namespace FiveZ.Server.Models
             }
         }
 
+        public List<Character> GetUserCharacters(Player _player)
+        {
+            try
+            {
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
+                {
+                    LiteCollection<Character> characters = db.GetCollection<Character>("characters");
+                    User user = SessionManager.Sessions.Find(u => u.Player.Handle == _player.Handle).User;
+                    IEnumerable<Character> allCharacters = characters.Find(ac => ac.UserId == user.Id);
+                    return allCharacters.ToList();
+                }
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+                return null;
+            }
+        }
+
         public void UpdateUserCharacter()
         {
 
-        } // ND
+        }
 
         public void SelectUserCharacter(int _charID)
         {
             try
             {
-                using (LiteDatabase db = new LiteDatabase(Database.DBPath))
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
                     Character foundCharacter = characters.FindOne(c => c.Id == _charID);
@@ -183,7 +238,7 @@ namespace FiveZ.Server.Models
         {
             try
             {
-                using (LiteDatabase db = new LiteDatabase(Database.DBPath))
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
                     characters.Delete(c => c.Id == _charID);
