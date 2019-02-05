@@ -20,6 +20,7 @@ namespace FiveZ.Server.Classes.Managers
             Main.GetInstance().RegisterEventHandler("FiveZ:CreateCharacter", new Action<Player, string, string, int>(CreateCharacter));
             Main.GetInstance().RegisterEventHandler("FiveZ:SelectCharacter", new Action<Player, int>(SelectCharacter));
             Main.GetInstance().RegisterEventHandler("FiveZ:Disconnect", new Action<Player>(Disconnect));
+            Main.GetInstance().RegisterEventHandler("FiveZ:FinishCharacterEditing", new Action<Player, string>(FinishedCharacterEditing));
             Utils.WriteLine("SessionManager Loaded");
         }
 
@@ -27,10 +28,6 @@ namespace FiveZ.Server.Classes.Managers
         {
             Utils.WriteLine($"Player Joined: {_player.Name}");
             new Session().Initialize(_player);
-
-            // Testing Character Stuff
-            //Session testing = Sessions.Find(s => s.Player.Handle == _player.Handle);
-            //testing.CreateUserCharacter("Testing", "User", Shared.Enums.Genders.Male);
         }
 
         public void DeinitializeSession([FromSource] Player _player, string _reason)
@@ -65,7 +62,6 @@ namespace FiveZ.Server.Classes.Managers
 
         public void SelectCharacter([FromSource] Player _player, int _charID)
         {
-            // Do Stuff
             Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
             if (playersession != null)
             {
@@ -79,6 +75,19 @@ namespace FiveZ.Server.Classes.Managers
             if (playersession != null)
             {
                 playersession.Drop("Disconnected");
+            }
+        }
+
+        private void FinishedCharacterEditing([FromSource] Player _player, string _characterchar)
+        {
+            Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (playersession != null)
+            {
+                Character FinishedCharacter = JsonConvert.DeserializeObject<Character>(_characterchar);
+                playersession.Character = FinishedCharacter;
+                playersession.UpdateUserCharacter();
+                // Start Player Spawn After Character Finish
+                Utils.WriteLine($"Character {FinishedCharacter.FirstName} {FinishedCharacter.LastName} is gonna spawn");
             }
         }
 

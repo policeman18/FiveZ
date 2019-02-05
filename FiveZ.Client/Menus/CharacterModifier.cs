@@ -5,12 +5,16 @@ using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
 using MenuAPI;
+using FiveZ.Shared.Models;
 using FiveZ.Shared.Enums;
 
 namespace FiveZ.Client.Menus
 {
     public class CharacterModifier
     {
+        // Character
+        private static Character CurrentCharacter = new Character();
+
         // Menus
         private static Menu Menu = new Menu("FiveZ", "Character Editor");
         private static MenuItem ParentsMenuButton = new MenuItem("Parents Menu");
@@ -19,25 +23,10 @@ namespace FiveZ.Client.Menus
         private static MenuItem FinishEditingButton = new MenuItem("~g~Finish Character", "~r~REMINDER! You are only allowed to set this once!!!");
 
         // Parents Menu
-        private static int FatherFace = 0;
-        private static int MotherFace = 0;
-        private static float ParentMix = 0f;
-
         private static Menu ParentsMenu = new Menu("FiveZ", "Parent Blend");
         private static MenuSliderItem ParentFatherFace = new MenuSliderItem("Fathers Face", 0, 45, 0);
         private static MenuSliderItem ParentMotherFace = new MenuSliderItem("Mothers Face", 0, 45, 0);
         private static MenuSliderItem ParentsMenuMixBar = new MenuSliderItem("Parent Mix", 0, 10, 5) { ShowDivider = true };
-
-        // Appearance Menu
-        private static int HairStyle = 0;
-        private static int HairColor = 0;
-        private static int HairHighlightColor = 0;
-
-        private static MenuSliderItem AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 10, 0);
-        private static MenuSliderItem AppearanceHairColors = new MenuSliderItem("Hair Colors", 0, 0, 0);
-        private static MenuSliderItem AppearanceHairHighlights = new MenuSliderItem("Hair Highlights", 0, 0, 0);
-
-        private static Menu AppearanceMenu = new Menu("FiveZ", "Appearance");
 
         // Shape Menu
         private static Dictionary<int, float> FaceFeatures = new Dictionary<int, float>()
@@ -67,13 +56,33 @@ namespace FiveZ.Client.Menus
         private static MenuSliderItem ChinHole = new MenuSliderItem("Chin Hole", -10, 10, 0) { ShowDivider = true };
         private static MenuSliderItem NeckThickness = new MenuSliderItem("Neck Thickness", -10, 10, 0) { ShowDivider = true };
 
-        public static async void EnableCharacterModifier()
+        // Appearance Menu
+        private static Menu AppearanceMenu = new Menu("FiveZ", "Appearance");
+        private static MenuSliderItem AppearanceBlemishes = new MenuSliderItem("Blemishes", 0, 23, 0);
+        private static MenuSliderItem AppearanceBlemishesOpacity = new MenuSliderItem("Blemishes Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceFacialHair = new MenuSliderItem("Facial Hair", 0, 28, 0);
+        private static MenuSliderItem AppearanceFacialHairOpacity = new MenuSliderItem("Facial Hair Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceEyebrows = new MenuSliderItem("Eyebrows", 0, 33, 0);
+        private static MenuSliderItem AppearanceEyebrowsOpacity = new MenuSliderItem("Eyebrow Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceAgeing = new MenuSliderItem("Ageing", 0, 14, 0);
+        private static MenuSliderItem AppearanceAgeingOpacity = new MenuSliderItem("Ageing Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceComplexion = new MenuSliderItem("Complexion", 0, 11, 0);
+        private static MenuSliderItem AppearanceComplexionOpacity = new MenuSliderItem("Complexion Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceSunDamage = new MenuSliderItem("Sun Damage", 0, 10, 0);
+        private static MenuSliderItem AppearanceSunDamageOpacity = new MenuSliderItem("Sun Damage Opacity", 0, 10, 0);
+        private static MenuSliderItem AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 10, 0);
+        private static MenuSliderItem AppearanceHairColors = new MenuSliderItem("Hair Colors", 0, 0, 0);
+        private static MenuSliderItem AppearanceHairHighlights = new MenuSliderItem("Hair Highlights", 0, 0, 0);
+
+        public static async void EnableCharacterModifier(Character _character)
         {
             // Character Setup
+            CurrentCharacter = _character;
             Main.GetInstance().RegisterTickHandler(KeepMenuEnabled);
             World.RenderingCamera = World.CreateCamera(Game.Player.Character.Position, new Vector3(0f, 0f, 0f), 30f);
             await BaseScript.Delay(100);
-            World.RenderingCamera.AttachTo(Game.Player.Character.Bones[Bone.SKEL_Head], new Vector3(0f, 6f, 0.5f)); // 0f 2f 0.5f
+            World.RenderingCamera.AttachTo(Game.Player.Character.Bones[Bone.SKEL_Head], new Vector3(0f, 2f, 0.5f));
+            SetPedBlendData();
             CreateMenu();
         }
 
@@ -87,7 +96,17 @@ namespace FiveZ.Client.Menus
             MenuController.AddMenu(Menu);
             Menu.AddMenuItem(ParentsMenuButton); MenuController.AddSubmenu(Menu, ParentsMenu); MenuController.BindMenuItem(Menu, ParentsMenu, ParentsMenuButton);
             Menu.AddMenuItem(ShapeMenuButton); MenuController.AddSubmenu(Menu, ShapeMenu); MenuController.BindMenuItem(Menu, ShapeMenu, ShapeMenuButton);
-            Menu.AddMenuItem(AppearanceMenuButton); MenuController.AddSubmenu(Menu, AppearanceMenu); MenuController.BindMenuItem(Menu, AppearanceMenu, AppearanceMenuButton); Menu.AddMenuItem(FinishEditingButton);
+            Menu.AddMenuItem(AppearanceMenuButton); MenuController.AddSubmenu(Menu, AppearanceMenu); MenuController.BindMenuItem(Menu, AppearanceMenu, AppearanceMenuButton);
+            Menu.AddMenuItem(FinishEditingButton);
+            Menu.OnItemSelect += (_menu, _item, _index) =>
+            {
+                if (_item == FinishEditingButton)
+                {
+                    CurrentCharacter.isNew = false;
+                    Main.TriggerServerEvent("FiveZ:FinishCharacterEditing", Newtonsoft.Json.JsonConvert.SerializeObject(CurrentCharacter));
+                    DisableCharacterModifier();
+                }
+            };
 
             // Generate Parents Menu
             ParentsMenu.AddMenuItem(ParentFatherFace);
@@ -97,17 +116,17 @@ namespace FiveZ.Client.Menus
             {
                 if (_sliderItem == ParentFatherFace)
                 {
-                    FatherFace = _newPosition;
+                    CurrentCharacter.Parents.Father = _newPosition;
                     SetPedBlendData();
                 }
                 else if (_sliderItem == ParentMotherFace)
                 {
-                    MotherFace = _newPosition;
+                    CurrentCharacter.Parents.Mother = _newPosition;
                     SetPedBlendData();
                 }
                 else if (_sliderItem == ParentsMenuMixBar)
                 {
-                    ParentMix = (float)((_newPosition / 10m) * 1m);
+                    CurrentCharacter.Parents.Mix = (float)((_newPosition / 10m) * 1m);
                     SetPedBlendData();
                 }
             };
@@ -137,106 +156,105 @@ namespace FiveZ.Client.Menus
             {
                 if (_sliderItem == NoseWidth)
                 {
-                    FaceFeatures[0] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(0, FaceFeatures[0]);
+                    CurrentCharacter.FaceFeatures[0] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(0, CurrentCharacter.FaceFeatures[0]);
                 }
                 else if (_sliderItem == NosePeakHeight)
                 {
-                    FaceFeatures[1] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(1, FaceFeatures[1]);
+                    CurrentCharacter.FaceFeatures[1] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(1, CurrentCharacter.FaceFeatures[1]);
                 }
                 else if (_sliderItem == NosePeakLength)
                 {
-                    FaceFeatures[2] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(2, FaceFeatures[2]);
+                    CurrentCharacter.FaceFeatures[2] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(2, CurrentCharacter.FaceFeatures[2]);
                 }
                 else if (_sliderItem == NoseBoneHeight)
                 {
-                    FaceFeatures[3] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(3, FaceFeatures[3]);
+                    CurrentCharacter.FaceFeatures[3] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(3, CurrentCharacter.FaceFeatures[3]);
                 }
                 else if (_sliderItem == NosePeakLowering)
                 {
-                    FaceFeatures[4] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(4, FaceFeatures[4]);
+                    CurrentCharacter.FaceFeatures[4] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(4, CurrentCharacter.FaceFeatures[4]);
                 }
                 else if (_sliderItem == NoseBoneTwist)
                 {
-                    FaceFeatures[5] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(5, FaceFeatures[5]);
+                    CurrentCharacter.FaceFeatures[5] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(5, CurrentCharacter.FaceFeatures[5]);
                 }
                 else if (_sliderItem == EyeBrowHeight)
                 {
-                    FaceFeatures[6] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(6, FaceFeatures[6]);
+                    CurrentCharacter.FaceFeatures[6] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(6, CurrentCharacter.FaceFeatures[6]);
                 }
                 else if (_sliderItem == EyeBrowLength)
                 {
-                    FaceFeatures[7] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(7, FaceFeatures[7]);
+                    CurrentCharacter.FaceFeatures[7] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(7, CurrentCharacter.FaceFeatures[7]);
                 }
                 else if (_sliderItem == CheekBoneHeight)
                 {
-                    FaceFeatures[8] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(8, FaceFeatures[8]);
+                    CurrentCharacter.FaceFeatures[8] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(8, CurrentCharacter.FaceFeatures[8]);
                 }
                 else if (_sliderItem == CheekBoneWidth)
                 {
-                    FaceFeatures[9] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(9, FaceFeatures[9]);
+                    CurrentCharacter.FaceFeatures[9] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(9, CurrentCharacter.FaceFeatures[9]);
                 }
                 else if (_sliderItem == CheekWidth)
                 {
-                    FaceFeatures[10] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(10, FaceFeatures[10]);
+                    CurrentCharacter.FaceFeatures[10] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(10, CurrentCharacter.FaceFeatures[10]);
                 }
                 else if (_sliderItem == EyeOpenings)
                 {
-                    FaceFeatures[11] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(11, FaceFeatures[11]);
+                    CurrentCharacter.FaceFeatures[11] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(11, CurrentCharacter.FaceFeatures[11]);
                 }
                 else if (_sliderItem == LipThickness)
                 {
-                    FaceFeatures[12] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(12, FaceFeatures[12]);
+                    CurrentCharacter.FaceFeatures[12] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(12, CurrentCharacter.FaceFeatures[12]);
                 }
                 else if (_sliderItem == JawBoneWidth)
                 {
-                    FaceFeatures[13] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(13, FaceFeatures[13]);
+                    CurrentCharacter.FaceFeatures[13] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(13, CurrentCharacter.FaceFeatures[13]);
                 }
                 else if (_sliderItem == JawBoneLength)
                 {
-                    FaceFeatures[14] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(14, FaceFeatures[14]);
+                    CurrentCharacter.FaceFeatures[14] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(14, CurrentCharacter.FaceFeatures[14]);
                 }
                 else if (_sliderItem == ChinBoneLowering)
                 {
-                    FaceFeatures[15] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(15, FaceFeatures[15]);
+                    CurrentCharacter.FaceFeatures[15] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(15, CurrentCharacter.FaceFeatures[15]);
                 }
                 else if (_sliderItem == ChinBoneLength)
                 {
-                    FaceFeatures[16] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(16, FaceFeatures[16]);
+                    CurrentCharacter.FaceFeatures[16] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(16, CurrentCharacter.FaceFeatures[16]);
                 }
                 else if (_sliderItem == ChinBoneWidth)
                 {
-                    FaceFeatures[17] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(17, FaceFeatures[17]);
+                    CurrentCharacter.FaceFeatures[17] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(17, CurrentCharacter.FaceFeatures[17]);
                 }
                 else if (_sliderItem == ChinHole)
                 {
-                    FaceFeatures[18] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(18, FaceFeatures[18]);
+                    CurrentCharacter.FaceFeatures[18] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(18, CurrentCharacter.FaceFeatures[18]);
                 }
                 else if (_sliderItem == NeckThickness)
                 {
-                    FaceFeatures[19] = (float)((_newPosition / 10m) * 1m);
-                    SetPedFaceFeature(19, FaceFeatures[19]);
+                    CurrentCharacter.FaceFeatures[19] = (float)((_newPosition / 10m) * 1m);
+                    SetPedFaceFeature(19, CurrentCharacter.FaceFeatures[19]);
                 }
             };
-
 
             // Generate Appearance Menu
             if (Game.Player.Character.Gender == Gender.Male)
@@ -247,6 +265,18 @@ namespace FiveZ.Client.Menus
             {
                 AppearanceHairStyles = new MenuSliderItem("Hair Styles", 0, 23, 0);
             }
+            AppearanceMenu.AddMenuItem(AppearanceBlemishes);
+            AppearanceMenu.AddMenuItem(AppearanceBlemishesOpacity);
+            AppearanceMenu.AddMenuItem(AppearanceFacialHair);
+            AppearanceMenu.AddMenuItem(AppearanceFacialHairOpacity);
+            AppearanceMenu.AddMenuItem(AppearanceEyebrows);
+            AppearanceMenu.AddMenuItem(AppearanceEyebrowsOpacity);
+            AppearanceMenu.AddMenuItem(AppearanceAgeing);
+            AppearanceMenu.AddMenuItem(AppearanceAgeingOpacity);
+            AppearanceMenu.AddMenuItem(AppearanceComplexion);
+            AppearanceMenu.AddMenuItem(AppearanceComplexionOpacity);
+            AppearanceMenu.AddMenuItem(AppearanceSunDamage);
+            AppearanceMenu.AddMenuItem(AppearanceSunDamageOpacity);
             AppearanceMenu.AddMenuItem(AppearanceHairStyles);
             AppearanceMenu.AddMenuItem(AppearanceHairColors);
             AppearanceMenu.AddMenuItem(AppearanceHairHighlights);
@@ -254,8 +284,8 @@ namespace FiveZ.Client.Menus
             {
                 if (_sliderItem == AppearanceHairStyles)
                 {
-                    HairStyle = _newPosition;
-                    Game.Player.Character.Style[PedComponents.Hair].SetVariation(HairStyle, HairColor);
+                    CurrentCharacter.Appearance.HairStyle = _newPosition;
+                    Game.Player.Character.Style[PedComponents.Hair].SetVariation(CurrentCharacter.Appearance.HairStyle, CurrentCharacter.Appearance.HairColor);
                     ResetHairColors();
                 }
                 else if (_sliderItem == AppearanceHairColors)
@@ -266,14 +296,62 @@ namespace FiveZ.Client.Menus
                 {
                     SetPedHairHighlightColor(_newPosition);
                 }
+                else if (_sliderItem == AppearanceBlemishes)
+                {
+                    SetOverlay(0, _newPosition, CurrentCharacter.Appearance.Overlays[0].Opacity);
+                }
+                else if (_sliderItem == AppearanceBlemishesOpacity)
+                {
+                    SetOverlay(0, CurrentCharacter.Appearance.Overlays[0].Index, (float)((_newPosition / 10m) * 1m));
+                }
+                else if (_sliderItem == AppearanceFacialHair)
+                {
+                    SetOverlay(1, _newPosition, CurrentCharacter.Appearance.Overlays[1].Opacity, true);
+                }
+                else if (_sliderItem == AppearanceFacialHairOpacity)
+                {
+                    SetOverlay(1, CurrentCharacter.Appearance.Overlays[1].Index, (float)((_newPosition / 10m) * 1m));
+                }
+                else if (_sliderItem == AppearanceEyebrows)
+                {
+                    SetOverlay(2, _newPosition, CurrentCharacter.Appearance.Overlays[2].Opacity, true);
+                }
+                else if (_sliderItem == AppearanceEyebrowsOpacity)
+                {
+                    SetOverlay(2, CurrentCharacter.Appearance.Overlays[2].Index, (float)((_newPosition / 10m) * 1m));
+                }
+                else if (_sliderItem == AppearanceAgeing)
+                {
+                    SetOverlay(3, _newPosition, CurrentCharacter.Appearance.Overlays[3].Opacity, false);
+                }
+                else if (_sliderItem == AppearanceAgeingOpacity)
+                {
+                    SetOverlay(3, CurrentCharacter.Appearance.Overlays[3].Index, (float)((_newPosition / 10m) * 1m));
+                }
+                else if (_sliderItem == AppearanceComplexion)
+                {
+                    SetOverlay(6, _newPosition, CurrentCharacter.Appearance.Overlays[6].Opacity);
+                }
+                else if (_sliderItem == AppearanceComplexionOpacity)
+                {
+                    SetOverlay(6, CurrentCharacter.Appearance.Overlays[6].Index, (float)((_newPosition / 10m) * 1m));
+                }
+                else if (_sliderItem == AppearanceSunDamage)
+                {
+                    SetOverlay(7, _newPosition, CurrentCharacter.Appearance.Overlays[7].Opacity);
+                }
+                else if (_sliderItem == AppearanceSunDamageOpacity)
+                {
+                    SetOverlay(7, CurrentCharacter.Appearance.Overlays[7].Index, (float)((_newPosition / 10m) * 1m));
+                }
             };
         }
 
         public static void DisableCharacterModifier()
         {
-            MenuController.Menus.Remove(Menu);
             Main.GetInstance().UnregisterTickHandler(KeepMenuEnabled);
-            Menu.CloseMenu();
+            MenuController.Menus.Remove(Menu);
+            World.RenderingCamera = null;
         }
 
         private static async Task KeepMenuEnabled()
@@ -293,6 +371,21 @@ namespace FiveZ.Client.Menus
             Game.DisableControlThisFrame(0, Control.MoveLeft);
             Game.DisableControlThisFrame(0, Control.MoveRight);
 
+            if (Game.IsControlPressed(0, Control.MoveLeftOnly))
+            {
+                Game.Player.Character.Task.LookAt(Game.Player.Character.GetOffsetPosition(new Vector3(2f, 2f, 1f)), 100);
+            }
+            else if (Game.IsControlPressed(0, Control.MoveRightOnly))
+            {
+                Game.Player.Character.Task.LookAt(Game.Player.Character.GetOffsetPosition(new Vector3(-2f, 2f, 1f)), 100);
+            }
+            else
+            {
+                Game.Player.Character.Task.LookAt(Game.Player.Character.GetOffsetPosition(new Vector3(0f, 2f, 1f)), 100);
+            }
+
+            Game.Player.Character.Task.ClearAll();
+
             PlayerList players = new PlayerList();
             foreach (Player p in players)
             {
@@ -307,37 +400,52 @@ namespace FiveZ.Client.Menus
 
         private static void SetPedBlendData()
         {
-            API.SetPedHeadBlendData(Game.Player.Character.Handle, FatherFace, MotherFace, 0, FatherFace, MotherFace, 0, ParentMix, ParentMix, -1f, false);
+            API.SetPedHeadBlendData(Game.Player.Character.Handle, CurrentCharacter.Parents.Father, CurrentCharacter.Parents.Mother, 0, CurrentCharacter.Parents.Father, CurrentCharacter.Parents.Mother, 0, CurrentCharacter.Parents.Mix, CurrentCharacter.Parents.Mix, -1f, false);
         }
 
         private static void SetPedHairColor(int _color)
         {
-            HairColor = _color;
-            API.SetPedHairColor(Game.Player.Character.Handle, HairColor, HairHighlightColor);
+            CurrentCharacter.Appearance.HairColor = _color;
+            API.SetPedHairColor(Game.Player.Character.Handle, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
+            SetOverlay(1, CurrentCharacter.Appearance.Overlays[1].Index, CurrentCharacter.Appearance.Overlays[1].Opacity, true);
+            SetOverlay(2, CurrentCharacter.Appearance.Overlays[2].Index, CurrentCharacter.Appearance.Overlays[2].Opacity, true);
         }
 
         private static void SetPedHairHighlightColor(int _color)
         {
-            HairHighlightColor = _color;
-            API.SetPedHairColor(Game.Player.Character.Handle, HairColor, HairHighlightColor);
+            CurrentCharacter.Appearance.HairHighlightColor = _color;
+            API.SetPedHairColor(Game.Player.Character.Handle, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
         }
 
         private static void ResetHairColors()
         {
-            HairColor = 0;
-            HairHighlightColor = 0;
+            CurrentCharacter.Appearance.HairColor  = 0;
+            CurrentCharacter.Appearance.HairHighlightColor = 0;
 
             AppearanceMenu.RemoveMenuItem(AppearanceHairColors);
             AppearanceMenu.RemoveMenuItem(AppearanceHairHighlights);
 
             int updatedNumHairColors = API.GetNumHairColors();
-            AppearanceHairColors = new MenuSliderItem("Hair Colors", 0, updatedNumHairColors, 0);
-            AppearanceHairHighlights = new MenuSliderItem("Hair Highlights", 0, updatedNumHairColors, 0);
+            AppearanceHairColors = new MenuSliderItem("Hair Colors", CurrentCharacter.Appearance.HairColor, updatedNumHairColors, 0);
+            AppearanceHairHighlights = new MenuSliderItem("Hair Highlights", CurrentCharacter.Appearance.HairHighlightColor, updatedNumHairColors, 0);
 
             AppearanceMenu.AddMenuItem(AppearanceHairColors);
             AppearanceMenu.AddMenuItem(AppearanceHairHighlights);
+            SetPedHairColor(0);
+            SetPedHairHighlightColor(0);
         }
-            
+
+        private static void SetOverlay(int _id, int _index, float _opacity, bool isHairColor = false)
+        {
+            API.SetPedHeadOverlay(Game.Player.Character.Handle, _id, _index, _opacity);
+            CurrentCharacter.Appearance.Overlays[_id].Index = _index;
+            CurrentCharacter.Appearance.Overlays[_id].Opacity = _opacity;
+            if (isHairColor)
+            {
+                API.SetPedHeadOverlayColor(Game.Player.Character.Handle, _id, 1, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
+            }
+        }
+
         private static void SetPedFaceFeature(int _index, float _scale)
         {
             API.SetPedFaceFeature(Game.Player.Character.Handle, _index, _scale);

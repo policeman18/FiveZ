@@ -22,7 +22,7 @@ namespace FiveZ.Server.Models
         public void Drop(string _reason) => API.DropPlayer(this.Player.Handle, _reason);
 
         public List<Character> Characters { get; protected set; } = new List<Character>();
-        public Character Character { get; protected set; }
+        public Character Character { get;  set; }
 
         public void Initialize(Player _player)
         {
@@ -213,7 +213,18 @@ namespace FiveZ.Server.Models
 
         public void UpdateUserCharacter()
         {
-
+            try
+            {
+                using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
+                {
+                    LiteCollection<Character> characters = db.GetCollection<Character>("characters");
+                    characters.Update(this.Character);
+                }
+            }
+            catch(Exception ex)
+            {
+                Utils.Throw(ex);
+            }
         }
 
         public void SelectUserCharacter(int _charID)

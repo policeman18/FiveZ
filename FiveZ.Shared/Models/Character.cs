@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Dynamic;
 using FiveZ.Shared.Enums;
 
 namespace FiveZ.Shared.Models
@@ -7,14 +8,46 @@ namespace FiveZ.Shared.Models
     {
         public int Father { get; set; } = 0;
         public int Mother { get; set; } = 0;
-        public float Mix { get; set; } = 0f;
+        public float Mix { get; set; } = 0.5f;
+    }
+
+    public class Overlay
+    {
+        public int Index { get; set; } = 0;
+        public float Opacity { get; set; } = 0f;
+
+        public Overlay() { }
+        public Overlay(int _index, float _opacity)
+        {
+            this.Index = _index;
+            this.Opacity = _opacity;
+        }
     }
 
     public class CharacterAppearance
     {
+        // Hair Appearance
         public int HairStyle { get; set; } = 0;
         public int HairColor { get; set; } = 0;
         public int HairHighlightColor { get; set; } = 0;
+
+        // Appearance Overlays
+        public Dictionary<int, Overlay> Overlays { get; set; } = new Dictionary<int, Overlay>()
+        {
+            [0] = new Overlay(),
+            [1] = new Overlay(),
+            [2] = new Overlay(),
+            [3] = new Overlay(),
+            [4] = new Overlay(),
+            [5] = new Overlay(),
+            [6] = new Overlay(),
+            [7] = new Overlay(),
+            [8] = new Overlay(),
+            [9] = new Overlay(),
+            [10] = new Overlay(),
+            [11] = new Overlay(),
+            [12] = new Overlay()
+        };
     }
 
     public class Character
@@ -25,9 +58,10 @@ namespace FiveZ.Shared.Models
         public string LastName { get; set; }
         public Genders Gender { get; set; }
         public bool isNew { get; set; } = true;
+        public bool isDead { get; set; } = true;
         public float[] LastPos { get; set; } = new float[] { 0f, 0f, 0f };
         public string Model { get; set; }
-        public CharacterParents Parents { get; set; }
+        public CharacterParents Parents { get; set; } = new CharacterParents();
         public Dictionary<int, float> FaceFeatures { get; set; } = new Dictionary<int, float>()
         {
             [0] = 0f,
@@ -51,6 +85,7 @@ namespace FiveZ.Shared.Models
             [18] = 0f,
             [19] = 0f
         };
+        public CharacterAppearance Appearance { get; set; } = new CharacterAppearance();
         public Dictionary<int, int[]> Clothing { get; set; } = new Dictionary<int, int[]>()
         {
             [0] = new int[] { 0, 0 },

@@ -2,11 +2,13 @@
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
+using FiveZ.Client.Models;
 
 namespace FiveZ.Client.Classes.Managers
 {
     public class SessionManager
     {
+        public static Session PlayerSession = null;
 
         public SessionManager()
         {
