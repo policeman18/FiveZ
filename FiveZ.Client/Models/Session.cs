@@ -9,7 +9,6 @@ namespace FiveZ.Client.Models
     public class Session
     {
         public Character SpawnedCharacter { get; set; }
-        public bool isDead { get; set; } = false;
 
         public Session(Character _character)
         {
@@ -20,6 +19,8 @@ namespace FiveZ.Client.Models
         public Session InitializeSession()
         {
             Main.GetInstance().RegisterTickHandler(this.CheckDeadStatus);
+            Main.GetInstance().RegisterTickHandler(this.SaveLastLocation);
+            Main.GetInstance().RegisterTickHandler(this.SaveCharacter);
             return this;
         }
 
@@ -27,13 +28,32 @@ namespace FiveZ.Client.Models
         {
             if (Game.Player.Character.IsDead)
             {
-                if (!this.isDead)
+                if (!this.SpawnedCharacter.isDead)
                 {
-                    this.isDead = true;
-                    CitizenFX.Core.UI.Screen.ShowNotification("YOU JUST DIED BITCH");
+                    this.SpawnedCharacter.isDead = true;
                 }
             }
             await BaseScript.Delay(1000);
+        }
+
+        private async Task SaveLastLocation()
+        {
+            Vector3 CurrentPostion = Game.Player.Character.Position;
+            float HeightAboveGround = Game.Player.Character.HeightAboveGround;
+            this.SpawnedCharacter.LastPos[0] = CurrentPostion.X;
+            this.SpawnedCharacter.LastPos[1] = CurrentPostion.Y;
+            this.SpawnedCharacter.LastPos[2] = CurrentPostion.Z - HeightAboveGround;
+            Utils.WriteLine("Saving Last Location");
+            await BaseScript.Delay(15000);
+        }
+
+        private async Task SaveCharacter()
+        {
+            await BaseScript.Delay(60000);
+            CitizenFX.Core.UI.Screen.LoadingPrompt.Show("Saving Character", CitizenFX.Core.UI.LoadingSpinnerType.Clockwise1);
+            await BaseScript.Delay(3500);
+            CitizenFX.Core.UI.Screen.LoadingPrompt.Hide();
+            Main.TriggerServerEvent("FiveZ:SaveCharacter", Newtonsoft.Json.JsonConvert.SerializeObject(this.SpawnedCharacter));
         }
     }
 }

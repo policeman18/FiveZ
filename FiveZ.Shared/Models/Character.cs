@@ -58,7 +58,7 @@ namespace FiveZ.Shared.Models
         public string LastName { get; set; }
         public Genders Gender { get; set; }
         public bool isNew { get; set; } = true;
-        public bool isDead { get; set; } = true;
+        public bool isDead { get; set; } = false;
         public float[] LastPos { get; set; } = new float[] { 0f, 0f, 0f };
         public string Model { get; set; }
         public CharacterParents Parents { get; set; } = new CharacterParents();

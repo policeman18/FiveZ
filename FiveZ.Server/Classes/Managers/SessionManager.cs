@@ -21,6 +21,7 @@ namespace FiveZ.Server.Classes.Managers
             Main.GetInstance().RegisterEventHandler("FiveZ:SelectCharacter", new Action<Player, int>(SelectCharacter));
             Main.GetInstance().RegisterEventHandler("FiveZ:Disconnect", new Action<Player>(Disconnect));
             Main.GetInstance().RegisterEventHandler("FiveZ:FinishCharacterEditing", new Action<Player, string>(FinishedCharacterEditing));
+            Main.GetInstance().RegisterEventHandler("FiveZ:SaveCharacter", new Action<Player, string>(SaveCharacter));
             Utils.WriteLine("SessionManager Loaded");
         }
 
@@ -86,8 +87,19 @@ namespace FiveZ.Server.Classes.Managers
                 Character FinishedCharacter = JsonConvert.DeserializeObject<Character>(_characterchar);
                 playersession.Character = FinishedCharacter;
                 playersession.UpdateUserCharacter();
-                // Start Player Spawn After Character Finish
-                Utils.WriteLine($"Character {FinishedCharacter.FirstName} {FinishedCharacter.LastName} is gonna spawn");
+                playersession.Player.TriggerEvent("FiveZ:HandlePlayerSpawn", JsonConvert.SerializeObject(playersession.Character));
+            }
+        }
+
+        private void SaveCharacter([FromSource] Player _player, string _characterchar)
+        {
+            Session playersession = Sessions.Find(s => s.Player.Handle == _player.Handle);
+            if (playersession != null)
+            {
+                Character SpawnedCharacter = JsonConvert.DeserializeObject<Character>(_characterchar);
+                playersession.Character = SpawnedCharacter;
+                playersession.UpdateUserCharacter();
+                Utils.WriteLine($"Saved Player: {_player.Name}'s character {SpawnedCharacter.FirstName} {SpawnedCharacter.LastName}");
             }
         }
 
