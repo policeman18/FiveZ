@@ -46,7 +46,6 @@ namespace FiveZ.Client.Classes.Managers
             }
         }
 
-
         public async void HandlePlayerSpawn(string _character)
         {
             Character chardata = JsonConvert.DeserializeObject<Character>(_character);
@@ -55,7 +54,7 @@ namespace FiveZ.Client.Classes.Managers
             float SpawnHeading = 0f;
 
             // Set Clothing
-            Game.Player.Character.Style[PedComponents.Hair].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Hair)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Hair)][1]);
+            Game.Player.Character.Style[PedComponents.Hair].SetVariation(chardata.Appearance.HairStyle, 0);
             Game.Player.Character.Style[PedComponents.Torso].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Torso)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Torso)][1]);
             Game.Player.Character.Style[PedComponents.Legs].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Legs)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Legs)][1]);
             Game.Player.Character.Style[PedComponents.Hands].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Hands)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Hands)][1]);
@@ -65,6 +64,28 @@ namespace FiveZ.Client.Classes.Managers
             Game.Player.Character.Style[PedComponents.Special3].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Special3)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Special3)][1]);
             Game.Player.Character.Style[PedComponents.Textures].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Textures)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Textures)][1]);
             Game.Player.Character.Style[PedComponents.Torso2].SetVariation(chardata.Clothing[Convert.ToInt32(PedComponents.Torso2)][0], chardata.Clothing[Convert.ToInt32(PedComponents.Torso2)][1]);
+
+            // Set Parent Blend
+            API.SetPedHeadBlendData(Game.Player.Character.Handle, chardata.Parents.Father, chardata.Parents.Mother, 0, chardata.Parents.Father, chardata.Parents.Mother, 0, chardata.Parents.Mix, chardata.Parents.Mix, -1, false);
+            
+            // Set Face Features
+            for (int a = 0; a < chardata.FaceFeatures.Count - 1; a++)
+            {
+                API.SetPedFaceFeature(Game.Player.Character.Handle, a, chardata.FaceFeatures[a]);
+            }
+
+            // Set Overlays
+            for (int a = 0; a < chardata.Appearance.Overlays.Count - 1; a++)
+            {
+                API.SetPedHeadOverlay(Game.Player.Character.Handle, a, chardata.Appearance.Overlays[a].Index, chardata.Appearance.Overlays[a].Opacity);
+                if (chardata.Appearance.Overlays[a].IsHair)
+                {
+                    API.SetPedHeadOverlayColor(Game.Player.Character.Handle, a, 1, chardata.Appearance.HairColor, chardata.Appearance.HairHighlightColor);
+                }
+            }
+
+            // Set Hair Colors
+            API.SetPedHairColor(Game.Player.Character.Handle, chardata.Appearance.HairColor, chardata.Appearance.HairHighlightColor);
 
             if (chardata.isNew)
             {

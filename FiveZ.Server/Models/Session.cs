@@ -162,8 +162,9 @@ namespace FiveZ.Server.Models
             {
                 using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
-                    LiteCollection<User> users = db.GetCollection<User>("user");
+                    LiteCollection<User> users = db.GetCollection<User>("users");
                     users.Update(this.User);
+                    Utils.WriteLine($"Updating User LastPlayed: {this.User.LastPlayed}");
                 }
             }
             catch(Exception ex)
@@ -236,7 +237,7 @@ namespace FiveZ.Server.Models
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
                     Character foundCharacter = characters.FindOne(c => c.Id == _charID);
                     this.Character = foundCharacter;
-                    this.Player.TriggerEvent("FiveZ:HandlePlayerSpawn", JsonConvert.SerializeObject(foundCharacter));
+                    this.Player.TriggerEvent("FiveZ:HandlePlayerSpawn", JsonConvert.SerializeObject(this.Character));
                 }
             }
             catch(Exception ex)

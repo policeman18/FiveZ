@@ -1,8 +1,12 @@
-﻿namespace FiveZ.Shared.Models.Configs
+﻿using Newtonsoft.Json;
+
+namespace FiveZ.Shared.Models.Configs
 {
     public class CharacterConfig
     {
-        public int MaxCharacters { get; set; }
-        public object StarterInventory { get; set; }
+        [JsonProperty]
+        public int MaxCharacters { get; protected set; }
+        [JsonProperty]
+        public object StarterInventory { get; protected set; }
     }
 }

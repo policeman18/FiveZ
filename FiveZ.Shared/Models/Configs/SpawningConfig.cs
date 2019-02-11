@@ -1,11 +1,18 @@
-﻿namespace FiveZ.Shared.Models.Configs
+﻿using Newtonsoft.Json;
+
+namespace FiveZ.Shared.Models.Configs
 {
     public class SpawningConfig
     {
-        public string SpawnLabel { get; set; }
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
-        public float H { get; set; }
+        [JsonProperty]
+        public string SpawnLabel { get; protected set; }
+        [JsonProperty]
+        public float X { get; protected set; }
+        [JsonProperty]
+        public float Y { get; protected set; }
+        [JsonProperty]
+        public float Z { get; protected set; }
+        [JsonProperty]
+        public float H { get; protected set; }
     }
 }

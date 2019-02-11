@@ -20,9 +20,9 @@ namespace FiveZ.Server.Classes.Managers
         private async void PlayerConnecting([FromSource] Player _player, string _playerName, dynamic _setKickReason, dynamic _deferrals)
         {
             _deferrals.defer();
-            for (int a = 0; a < serverConnectionWait; a++)
+            for (int a = 0; a < ConfigManager.ServerConfig.ServerConnectionDelayTime; a++)
             {
-                _deferrals.update($"Please wait {serverConnectionWait - a} seconds.");
+                _deferrals.update($"Please wait {ConfigManager.ServerConfig.ServerConnectionDelayTime - a} seconds.");
                 await BaseScript.Delay(1000);
             }
 
@@ -30,7 +30,7 @@ namespace FiveZ.Server.Classes.Managers
             if (!foundUser.Item1)
             {
 
-                if (isServerWhitlisted)
+                if (ConfigManager.ServerConfig.ServerWhitelisted)
                 {
                     new Session().CreatePlayerUser(_player);
                     _deferrals.done($"You are not whitelisted.");
@@ -50,7 +50,7 @@ namespace FiveZ.Server.Classes.Managers
                     return;
                 }
 
-                if (isServerWhitlisted)
+                if (ConfigManager.ServerConfig.ServerWhitelisted)
                 {
                     if (!u.IsWhitelisted)
                     {

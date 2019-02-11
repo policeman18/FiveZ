@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FiveZ.Shared</RootNamespace>
-    <AssemblyName>FiveZ.Shared</AssemblyName>
+    <AssemblyName>FiveZ.Shared.net</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -35,6 +35,10 @@
       <HintPath>..\..\..\..\Desktop\FiveM C# Things\CitizenFX.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Desktop\FiveM C# Things\newtonsoft-portable\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +54,7 @@
     <Compile Include="Enums\Permission.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\Configs\CharacterConfig.cs" />
+    <Compile Include="Models\Configs\ServerConfig.cs" />
     <Compile Include="Models\Configs\SpawningConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

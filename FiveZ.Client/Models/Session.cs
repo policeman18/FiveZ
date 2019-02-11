@@ -30,7 +30,14 @@ namespace FiveZ.Client.Models
             {
                 if (!this.SpawnedCharacter.isDead)
                 {
-                    this.SpawnedCharacter.isDead = true;
+                    this.SpawnedCharacter.SetDeadStatus(true);
+                }
+            }
+            else
+            {
+                if (this.SpawnedCharacter.isDead)
+                {
+                    this.SpawnedCharacter.SetDeadStatus(false);
                 }
             }
             await BaseScript.Delay(1000);
@@ -38,13 +45,13 @@ namespace FiveZ.Client.Models
 
         private async Task SaveLastLocation()
         {
+            await BaseScript.Delay(15000);
             Vector3 CurrentPostion = Game.Player.Character.Position;
             float HeightAboveGround = Game.Player.Character.HeightAboveGround;
             this.SpawnedCharacter.LastPos[0] = CurrentPostion.X;
             this.SpawnedCharacter.LastPos[1] = CurrentPostion.Y;
             this.SpawnedCharacter.LastPos[2] = CurrentPostion.Z - HeightAboveGround;
             Utils.WriteLine("Saving Last Location");
-            await BaseScript.Delay(15000);
         }
 
         private async Task SaveCharacter()

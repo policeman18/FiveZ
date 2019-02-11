@@ -102,7 +102,7 @@ namespace FiveZ.Client.Menus
             {
                 if (_item == FinishEditingButton)
                 {
-                    CurrentCharacter.isNew = false;
+                    CurrentCharacter.SetNoLongerNew();
                     Main.TriggerServerEvent("FiveZ:FinishCharacterEditing", Newtonsoft.Json.JsonConvert.SerializeObject(CurrentCharacter));
                     DisableCharacterModifier();
                 }
@@ -116,17 +116,17 @@ namespace FiveZ.Client.Menus
             {
                 if (_sliderItem == ParentFatherFace)
                 {
-                    CurrentCharacter.Parents.Father = _newPosition;
+                    CurrentCharacter.SetParents(_newPosition, CurrentCharacter.Parents.Mother, CurrentCharacter.Parents.Mix);
                     SetPedBlendData();
                 }
                 else if (_sliderItem == ParentMotherFace)
                 {
-                    CurrentCharacter.Parents.Mother = _newPosition;
+                    CurrentCharacter.SetParents(CurrentCharacter.Parents.Father, _newPosition, CurrentCharacter.Parents.Mix);
                     SetPedBlendData();
                 }
                 else if (_sliderItem == ParentsMenuMixBar)
                 {
-                    CurrentCharacter.Parents.Mix = (float)((_newPosition / 10m) * 1m);
+                    CurrentCharacter.SetParents(CurrentCharacter.Parents.Father, CurrentCharacter.Parents.Mother, (float)((_newPosition / 10m) * 1m));
                     SetPedBlendData();
                 }
             };
@@ -284,7 +284,7 @@ namespace FiveZ.Client.Menus
             {
                 if (_sliderItem == AppearanceHairStyles)
                 {
-                    CurrentCharacter.Appearance.HairStyle = _newPosition;
+                    CurrentCharacter.Appearance.SetHairStyle(_newPosition);
                     Game.Player.Character.Style[PedComponents.Hair].SetVariation(CurrentCharacter.Appearance.HairStyle, CurrentCharacter.Appearance.HairColor);
                     ResetHairColors();
                 }
@@ -405,7 +405,7 @@ namespace FiveZ.Client.Menus
 
         private static void SetPedHairColor(int _color)
         {
-            CurrentCharacter.Appearance.HairColor = _color;
+            CurrentCharacter.Appearance.SetHairColor(_color);
             API.SetPedHairColor(Game.Player.Character.Handle, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
             SetOverlay(1, CurrentCharacter.Appearance.Overlays[1].Index, CurrentCharacter.Appearance.Overlays[1].Opacity, true);
             SetOverlay(2, CurrentCharacter.Appearance.Overlays[2].Index, CurrentCharacter.Appearance.Overlays[2].Opacity, true);
@@ -413,14 +413,14 @@ namespace FiveZ.Client.Menus
 
         private static void SetPedHairHighlightColor(int _color)
         {
-            CurrentCharacter.Appearance.HairHighlightColor = _color;
+            CurrentCharacter.Appearance.SetHairHighlightColor(_color);
             API.SetPedHairColor(Game.Player.Character.Handle, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
         }
 
         private static void ResetHairColors()
         {
-            CurrentCharacter.Appearance.HairColor  = 0;
-            CurrentCharacter.Appearance.HairHighlightColor = 0;
+            CurrentCharacter.Appearance.SetHairColor(0);
+            CurrentCharacter.Appearance.SetHairHighlightColor(0);
 
             AppearanceMenu.RemoveMenuItem(AppearanceHairColors);
             AppearanceMenu.RemoveMenuItem(AppearanceHairHighlights);
@@ -438,8 +438,7 @@ namespace FiveZ.Client.Menus
         private static void SetOverlay(int _id, int _index, float _opacity, bool isHairColor = false)
         {
             API.SetPedHeadOverlay(Game.Player.Character.Handle, _id, _index, _opacity);
-            CurrentCharacter.Appearance.Overlays[_id].Index = _index;
-            CurrentCharacter.Appearance.Overlays[_id].Opacity = _opacity;
+            CurrentCharacter.Appearance.SetOverlay(_id, _index, _opacity);
             if (isHairColor)
             {
                 API.SetPedHeadOverlayColor(Game.Player.Character.Handle, _id, 1, CurrentCharacter.Appearance.HairColor, CurrentCharacter.Appearance.HairHighlightColor);
