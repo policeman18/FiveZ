@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
-using CitizenFX.Core.UI;
 using MenuAPI;
 using FiveZ.Shared.Models;
-using FiveZ.Shared.Enums;
 
 namespace FiveZ.Client.Menus
 {

@@ -53,9 +53,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Actions.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\Managers\ConfigManager.cs" />
     <Compile Include="Classes\Managers\InventoryManager.cs" />
+    <Compile Include="Classes\Managers\LootManager.cs" />
+    <Compile Include="Classes\Managers\ScaleformManager.cs" />
+    <Compile Include="Classes\Managers\TimeManager.cs" />
+    <Compile Include="Classes\Managers\WeatherManager.cs" />
     <Compile Include="Classes\Player\RemoveAI.cs" />
     <Compile Include="Classes\Player\RemoveDispatch.cs" />
     <Compile Include="Classes\Managers\SessionManager.cs" />

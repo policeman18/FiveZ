@@ -23,16 +23,6 @@ namespace FiveZ.Client.Classes.Managers
             Main.GetInstance().RegisterNUICallback("fivez_character_selectcharacter", SelectCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_createcharacter", CreateCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_disconnect", Disconnect);
-
-            // Test Command
-            API.RegisterCommand("xp", new Action<int, List<object>, string>((source, args, raw) => {
-                Tuple<bool, string> results = PlayerSession.SpawnedCharacter.AddExperience("crafting", 500);
-                if (results.Item1)
-                {
-                    // Trigger Level Up UI
-                }
-                //ScaleformManager.ShowRankupMessage("TESTING MESSAGE", "TESTING SUB MESSAGE", 10, 5000);
-            }), false);
         }
 
         private void ClientResourceStarted(string _resource)

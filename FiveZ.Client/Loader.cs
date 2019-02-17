@@ -15,6 +15,9 @@ namespace FiveZ.Client
             new ConfigManager();
             new SessionManager();
             new SpawnManager();
+            new WeatherManager();
+            new TimeManager();
+            new LootManager();
             
             // Player
             new RemoveAI();

@@ -50,12 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Genders.cs" />
-    <Compile Include="Enums\LootType.cs" />
     <Compile Include="Enums\Permission.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\Configs\CharacterConfig.cs" />
     <Compile Include="Models\Configs\ServerConfig.cs" />
     <Compile Include="Models\Configs\SpawningConfig.cs" />
+    <Compile Include="Models\Configs\WeatherConfig.cs" />
+    <Compile Include="Models\LootSpawnPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

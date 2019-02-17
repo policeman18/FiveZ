@@ -159,7 +159,7 @@ namespace FiveZ.Shared.Models
                 this.Level = newLevel;
                 return Tuple.Create<bool, string>(true, this.Skill);
             }
-            return Tuple.Create<bool, string>(false, this.Skill); 
+            return Tuple.Create<bool, string>(false, this.Skill);
         }
 
         public void ExperienceNeeded()
@@ -173,31 +173,14 @@ namespace FiveZ.Shared.Models
     /// </summary>
     public class CharacterInventoryItem
     {
+        public int Id { get; set; }
         public string Name { get; set; }
-        public LootType Type { get; set; }
-        public string ActionString { get; set; }
-        public object[] ActionArguments { get; set; }
-
-        // Base Constructor
-        public CharacterInventoryItem() { }
-
-        // Food, Drink, Health
-        public CharacterInventoryItem(string _name, LootType _type, string _action, object[] args)
-        {
-            this.Name = _name;
-            this.Type = _type;
-            this.ActionString = _action;
-            this.ActionArguments = args;
-        }
-
-        // PrimaryWeapon
-        // MeleeWeapon
-        // WeaponAttachment
-        // RifleAmmo
-        // ShotgunAmmo
-        // PistolAmmo
-        // Placements
-        // Regular
+        public string Description { get; set; }
+        public string Icon { get; set; }
+        public int Level { get; set; }
+        public string Action { get; set; }
+        public object[] ActionArgs { get; set; }
+        public Dictionary<string, object> Data = new Dictionary<string, object>();
     }
 
     /// <summary>
@@ -205,32 +188,50 @@ namespace FiveZ.Shared.Models
     /// </summary>
     public class CharacterInventory
     {
+
+        // Inventory Space
         [JsonProperty]
         public int InventorySpace { get; protected set; }
+
         [JsonProperty]
         public CharacterInventoryItem WeaponOne { get; protected set; }
+
         [JsonProperty]
         public CharacterInventoryItem WeaponTwo { get; protected set; }
+
         [JsonProperty]
         public CharacterInventoryItem WeaponThree { get; protected set; }
-        [JsonProperty]
-        public List<CharacterInventoryItem> Inventory { get; protected set; } = new List<CharacterInventoryItem>();
 
-        // Constructors
+        [JsonProperty]
+        public List<CharacterInventoryItem> Items { get; protected set; } = new List<CharacterInventoryItem>();
+
+        // Base Constructor
         public CharacterInventory() { }
+
+        // New Inventory Constructor
         public CharacterInventory(int _space)
         {
             this.InventorySpace = _space;
         }
 
+        // Sets inventory max space
+        public void SetInventorySpace(int _space)
+        {
+            this.InventorySpace = _space;
+        }
+
+        // Sets weapon slot one
         public void SetWeaponOne(CharacterInventoryItem _item)
         {
             this.WeaponOne = _item;
         }
+
+        // Removes weapon slot one
         public void RemoveWeaponOne()
         {
             this.WeaponOne = null;
         }
+
         public void SetWeaponTwo(CharacterInventoryItem _item)
         {
             this.WeaponTwo = _item;
@@ -249,11 +250,11 @@ namespace FiveZ.Shared.Models
         }
         public void AddItem(CharacterInventoryItem _item)
         {
-            this.Inventory.Add(_item);
+            this.Items.Add(_item);
         }
         public void DeleteItem(CharacterInventoryItem _item)
         {
-            this.Inventory.Remove(_item);
+            this.Items.Remove(_item);
         }
     }
     
@@ -262,26 +263,48 @@ namespace FiveZ.Shared.Models
     /// </summary>
     public class Character
     {
+
+        // Character Unique Identifier
         [JsonProperty]
         public int Id { get; protected set; }
+
+        // Players Unique User Identifier
         [JsonProperty]
         public int UserId { get; protected set; }
+
+        // Characters First Name
         [JsonProperty]
         public string FirstName { get; protected set; }
+
+        // Characters Last Name
         [JsonProperty]
         public string LastName { get; protected set; }
+
+        // Characters Gender
         [JsonProperty]
         public Genders Gender { get; protected set; }
+
+        // Defines if the character is new or not
         [JsonProperty]
         public bool isNew { get; protected set; } = true;
+
+        // Defines if the character is currently dead
         [JsonProperty]
         public bool isDead { get; protected set; } = true;
+
+        // Defines characters last position on save
         [JsonProperty]
         public float[] LastPos { get; protected set; } = new float[] { 0f, 0f, 0f };
+
+        // Defines characters model
         [JsonProperty]
         public string Model { get; protected set; }
+
+        // Defines Characters Parents
         [JsonProperty]
         public CharacterParents Parents { get; protected set; } = new CharacterParents();
+
+        // Defines Characters Facial Features
         [JsonProperty]
         public Dictionary<int, float> FaceFeatures { get; protected set; } = new Dictionary<int, float>()
         {
@@ -306,8 +329,12 @@ namespace FiveZ.Shared.Models
             [18] = 0f,
             [19] = 0f
         };
+
+        // Defines Characters Appearance
         [JsonProperty]
         public CharacterAppearance Appearance { get; protected set; } = new CharacterAppearance();
+
+        // Defines Characters Clothing
         [JsonProperty]
         public Dictionary<int, int[]> Clothing { get; protected set; } = new Dictionary<int, int[]>()
         {
@@ -324,6 +351,8 @@ namespace FiveZ.Shared.Models
             [10] = new int[] { 0, 0 },
             [11] = new int[] { 0, 0 }
         };
+
+        // Defines Characters Props
         [JsonProperty]
         public Dictionary<int, int[]> Props { get; protected set; } = new Dictionary<int, int[]>()
         {
@@ -338,16 +367,39 @@ namespace FiveZ.Shared.Models
             [8] = new int[] { 0, 0 },
             [9] = new int[] { 0, 0 }
         };
+
+        // Defines Characters Skills | Levels / XP
         [JsonProperty]
         public Dictionary<string, CharacterSkill> Skills { get; protected set; } = new Dictionary<string, CharacterSkill>()
         {
             ["stamina"] = new CharacterSkill("Stamina", 10),
             ["crafting"] = new CharacterSkill("Crafting", 25),
         };
+
+        // Defines Characters Inventory | Weapons / Items
         [JsonProperty]
         public CharacterInventory Inventory { get; protected set; } = new CharacterInventory();
 
+        // Defines Chracters Hunger
+        [JsonProperty]
+        public int Hunger { get; protected set; }
+
+        // Defines Characters Thirst
+        [JsonProperty]
+        public int Thirst { get; protected set; }
+
+        // Defines Characters Temperature
+        [JsonProperty]
+        public int Temperature { get; protected set; }
+
+        // Defines Characters Sickness
+        [JsonProperty]
+        public int Sickness { get; protected set; }
+
+        // Base Class Constructor
         public Character() {  }
+
+        // New Character Constructor
         public Character(int _userID, string _first, string _last, Genders _gender)
         {
             this.UserId = _userID;
@@ -389,16 +441,19 @@ namespace FiveZ.Shared.Models
             }
         }
 
+        // Sets character as no longer new
         public void SetNoLongerNew()
         {
             this.isNew = false;
         }
 
+        // Sets characters current death status
         public void SetDeadStatus(bool _isDead)
         {
             this.isDead = _isDead;
         }
 
+        // Sets characters last position
         public void SetLastPosition(float[] args)
         {
             this.LastPos[0] = args[0];
@@ -406,6 +461,7 @@ namespace FiveZ.Shared.Models
             this.LastPos[2] = args[2];
         }
 
+        // Sets characters parent properties
         public void SetParents(int _father, int _mother, float _mix)
         {
             this.Parents.SetFather(_father);
@@ -413,25 +469,77 @@ namespace FiveZ.Shared.Models
             this.Parents.SetMix(_mix);
         }
 
+        // Sets characters facial properties
         public void SetFaceFeature(int _key, float _featureMix)
         {
             this.FaceFeatures[_key] = _featureMix;
         }
 
+        // Sets characters clothing properties
         public void SetClothing(int _key, int[] args)
         {
             this.Clothing[_key] = new int[] { args[0], args[1] };
         }
 
+        // Sets characters prop properties
         public void SetProps(int _key, int[] args)
         {
             this.Props[_key] = new int[] { args[0], args[1] };
         }
 
+        // Adds XP to a defined skill
         public Tuple<bool, string> AddExperience(string _skill, int _amount)
         {
             if (this.Skills[_skill] == null) { return Tuple.Create<bool, string>(false, null); }
             return this.Skills[_skill].AddExperience(_amount);
+        }
+
+        // Add Hunger
+        public void AddHunger(int _amount)
+        {
+            int NewHunger = this.Hunger + _amount;
+            if (NewHunger > 100) { NewHunger = 100; }
+            this.Hunger = NewHunger;
+        }
+
+        // Remove Hunger
+        public void RemoveHunger(int _amount)
+        {
+            int NewHunger = this.Hunger - _amount;
+            if (NewHunger < 0) { NewHunger = 0; }
+            this.Hunger = NewHunger;
+        }
+
+        // Add Thirst
+        public void AddThirst(int _amount)
+        {
+            int NewThirst = this.Thirst + _amount;
+            if (NewThirst > 100) { NewThirst = 100; }
+            this.Thirst = NewThirst;
+        }
+
+        // Remove Thirst
+        public void RemoveThirst(int _amount)
+        {
+            int NewThirst = this.Thirst - _amount;
+            if (NewThirst < 0) { NewThirst = 0; }
+            this.Thirst = NewThirst;
+        }
+
+        // Add Sickness
+        public void AddSickness(int _amount)
+        {
+            int NewSickness = this.Sickness + _amount;
+            if (NewSickness > 100) { NewSickness = 100; }
+            this.Sickness = NewSickness;
+        }
+
+        // Remove Sickness
+        public void RemoveSickness(int _amount)
+        {
+            int NewSickness = this.Sickness - _amount;
+            if (NewSickness < 0) { NewSickness = 0; }
+            this.Sickness = NewSickness;
         }
     }
 }

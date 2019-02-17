@@ -41,13 +41,15 @@ namespace FiveZ.Server.Models
                 this.Characters = this.GetUserCharacters(_player);
             }
 
+            // Set User Last Played
             this.SetUserLastPlayed();
 
-            // Load Client Configs
+            // Trigger Start Session Events
             this.Player.TriggerEvent("FiveZ:SendClientConfigs", "spawns", JsonConvert.SerializeObject(ConfigManager.SpawningConfig));
-
-            // Enable Main Screen
             this.Player.TriggerEvent("FiveZ:EnableCharacterScreen", JsonConvert.SerializeObject(this.Characters));
+            this.Player.TriggerEvent("FiveZ:SendClientWeather", Convert.ToInt32(WeatherManager.CurrentWeather), Convert.ToInt32(WeatherManager.LastWeather));
+            this.Player.TriggerEvent("FiveZ:SetClientTime", JsonConvert.SerializeObject(TimeManager.CurrentTime));
+            this.Player.TriggerEvent("FiveZ:RecieveLootSpawns", JsonConvert.SerializeObject(LootManager.ItemSpawns));
         }
 
         public void Deinitialize()

@@ -12,6 +12,9 @@ namespace FiveZ.Server
             new ConfigManager();
             new ConnectionManager();
             new SessionManager();
+            new WeatherManager();
+            new TimeManager();
+            new LootManager();
 
             Utils.WriteLine("Classes Loaded!");
         }
