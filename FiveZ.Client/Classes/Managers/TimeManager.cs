@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveZ.Client.Classes.Managers
 {
@@ -13,6 +9,8 @@ namespace FiveZ.Client.Classes.Managers
         public TimeManager()
         {
             Main.GetInstance().RegisterEventHandler("FiveZ:SetClientTime", new Action<string>(SetClientTime));
+
+            Utils.WriteLine("TimeManager Loaded");
         }
 
         public void SetClientTime(string time)

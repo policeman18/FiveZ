@@ -21,8 +21,8 @@ namespace FiveZ.Client.Models
             Main.GetInstance().RegisterTickHandler(this.CheckDeadStatus);
             Main.GetInstance().RegisterTickHandler(this.SaveLastLocation);
             Main.GetInstance().RegisterTickHandler(this.SaveCharacter);
-            Main.GetInstance().RegisterTickHandler(this.DecreaseFood);
-            Main.GetInstance().RegisterTickHandler(this.DecreaseThirst);
+            //Main.GetInstance().RegisterTickHandler(this.DecreaseFood);
+            //Main.GetInstance().RegisterTickHandler(this.DecreaseThirst);
             return this;
         }
 

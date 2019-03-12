@@ -9,6 +9,7 @@ namespace FiveZ.Client.Classes.Managers
 {
     public class SessionManager
     {
+        private bool NUIReady = false;
         public static Session PlayerSession = null;
 
         public SessionManager()
@@ -19,18 +20,29 @@ namespace FiveZ.Client.Classes.Managers
             Main.GetInstance().RegisterEventHandler("FiveZ:UpdateCharacterScreen", new Action<string>(UpdateCharacterScreen));
 
             // NUI Callbacks
+            Main.GetInstance().RegisterNUICallback("fivez_nui_loaded", SetNUIReady);
             Main.GetInstance().RegisterNUICallback("fivez_character_deletecharacter", DeleteCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_selectcharacter", SelectCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_character_createcharacter", CreateCharacter);
             Main.GetInstance().RegisterNUICallback("fivez_disconnect", Disconnect);
+
+            Utils.WriteLine("SessionManager Loaded");
         }
 
-        private void ClientResourceStarted(string _resource)
+        private async void ClientResourceStarted(string _resource)
         {
             if (API.GetCurrentResourceName() == _resource)
             {
-                Language clientlanguage = (Language)API.GetCurrentLanguageId();
-                Debug.WriteLine($"Language: {clientlanguage}");
+                Main.GetInstance().SetNuiFocus(false, false);
+                int maxThreshhold = 5000;
+                int timeStamp = Game.GameTime;
+                Game.Player.CanControlCharacter = false;
+                Game.Player.IsInvincible = true;
+                Screen.LoadingPrompt.Show("Loading User Interface", LoadingSpinnerType.Clockwise1);
+                do { await BaseScript.Delay(100);  } while (!NUIReady && timeStamp + maxThreshhold > Game.GameTime);
+                Screen.LoadingPrompt.Hide();
+                Game.Player.CanControlCharacter = true;
+                Game.Player.IsInvincible = false;
                 Main.TriggerServerEvent("FiveZ:CreateSession");
             }
         }
@@ -46,6 +58,12 @@ namespace FiveZ.Client.Classes.Managers
         private void UpdateCharacterScreen(string _characters)
         {
             Main.GetInstance().SendNUIData("fivez_character", "UpdateCharacters", _characters);
+        }
+
+        private void SetNUIReady(dynamic data, CallbackDelegate _callback)
+        {
+            NUIReady = true;
+            Utils.WriteLine("NUI READY TO BE USED!!!");
         }
 
         private void DeleteCharacter(dynamic data, CallbackDelegate _callback)

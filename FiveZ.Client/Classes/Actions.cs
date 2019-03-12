@@ -18,7 +18,7 @@ namespace FiveZ.Client.Classes
 
         public static void BoundPlayer()
         {
-
+            
         }
 
         public static void PlayerEat(int _eatAmount)

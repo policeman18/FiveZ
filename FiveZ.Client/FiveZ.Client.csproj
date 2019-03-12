@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Actions.cs" />
+    <Compile Include="Classes\DevTools.cs" />
     <Compile Include="Classes\Helpers.cs" />
     <Compile Include="Classes\Managers\ConfigManager.cs" />
     <Compile Include="Classes\Managers\InventoryManager.cs" />

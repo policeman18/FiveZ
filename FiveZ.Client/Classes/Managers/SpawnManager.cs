@@ -24,6 +24,8 @@ namespace FiveZ.Client.Classes.Managers
 
                 // Disable Respawning
                 DisableAutoRespawning();
+
+                Utils.WriteLine("SpawnManager Loaded");
             }
             catch(Exception ex)
             {

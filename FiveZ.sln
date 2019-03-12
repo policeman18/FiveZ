@@ -9,25 +9,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveZ.Server", "FiveZ.Serve
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveZ.Shared", "FiveZ.Shared\FiveZ.Shared.csproj", "{257CF477-2552-43B0-B8DC-5388C5060F9F}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "interface(1)", "..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\interface\", "{1386326C-FFF6-4B60-8119-BBD2EFA10690}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_55745"
-		Debug.AspNetCompiler.PhysicalPath = "..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\interface\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55745\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_55745"
-		Release.AspNetCompiler.PhysicalPath = "..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\interface\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_55745\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "55745"
-		SlnRelativePath = "..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\interface\"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configs", "configs", "{898E132E-88BD-4D63-8F19-6BD30FF9F64D}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\characters.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\characters.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\controls.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\controls.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\items.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\items.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\itemspawns.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\itemspawns.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\playerspawns.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\playerspawns.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\server.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\server.json
+		..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\weather.json = ..\..\..\Desktop\FiveMServers\FiveZDevelopmentServer\resources\[custom]\fivez\configs\weather.json
 	EndProjectSection
 EndProject
 Global
@@ -48,10 +38,6 @@ Global
 		{257CF477-2552-43B0-B8DC-5388C5060F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{257CF477-2552-43B0-B8DC-5388C5060F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{257CF477-2552-43B0-B8DC-5388C5060F9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1386326C-FFF6-4B60-8119-BBD2EFA10690}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1386326C-FFF6-4B60-8119-BBD2EFA10690}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1386326C-FFF6-4B60-8119-BBD2EFA10690}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{1386326C-FFF6-4B60-8119-BBD2EFA10690}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

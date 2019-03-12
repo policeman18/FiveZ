@@ -9,6 +9,8 @@ namespace FiveZ.Client.Classes.Player
         public RemoveHealthRegen()
         {
             Main.GetInstance().RegisterTickHandler(OnTick);
+
+            Utils.WriteLine("RemoveHealthRegen Loaded");
         }
 
         public async Task OnTick()

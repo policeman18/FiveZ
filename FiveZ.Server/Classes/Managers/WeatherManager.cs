@@ -33,6 +33,8 @@ namespace FiveZ.Server.Classes.Managers
         public WeatherManager()
         {
             GenerateWeather();
+
+            Utils.WriteLine("WeatherManager Loaded");
         }
 
         public async void GenerateWeather()

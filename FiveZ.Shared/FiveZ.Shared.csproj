@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums\Genders.cs" />
+    <Compile Include="Enums\DefinedItems.cs" />
     <Compile Include="Enums\Permission.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Models\Configs\CharacterConfig.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using CitizenFX.Core;
 using CitizenFX.Core.Native;
 using CitizenFX.Core.UI;
@@ -43,6 +44,12 @@ namespace FiveZ.Client.Classes
             API.SetDrawOrigin(_pos.X, _pos.Y, _pos.Z, 0);
             API.DrawText(0f, 0f);
             API.ClearDrawOrigin();
+        }
+
+        public static async Task<Entity> CreateObjectFromWeaponHash(WeaponHash _hash)
+        {
+            Entity newObject = await World.CreateProp(new Model(_hash), Game.Player.Character.Position, true, true);
+            return newObject;
         }
 
     }

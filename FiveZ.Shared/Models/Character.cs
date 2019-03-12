@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CitizenFX.Core;
 using Newtonsoft.Json;
 using FiveZ.Shared.Enums;
 
@@ -173,14 +172,51 @@ namespace FiveZ.Shared.Models
     /// </summary>
     public class CharacterInventoryItem
     {
-        public int Id { get; set; }
+        [JsonProperty]
         public string Name { get; set; }
+        [JsonProperty]
         public string Description { get; set; }
+        [JsonProperty]
+        public DefinedItems DefinedItem { get; set; }
+        [JsonProperty]
         public string Icon { get; set; }
+        [JsonProperty]
         public int Level { get; set; }
+        [JsonProperty]
+        public bool IsWeapon { get; set; }
+        [JsonProperty]
+        public CharacterInventoryItem Magazine { get; set; }
+        [JsonProperty]
+        public DefinedItems[] WeaponMags { get; set; }
+        [JsonProperty]
         public string Action { get; set; }
-        public object[] ActionArgs { get; set; }
-        public Dictionary<string, object> Data = new Dictionary<string, object>();
+        [JsonProperty]
+        public Dictionary<string, object> Data { get; set; } = new Dictionary<string, object>();
+
+        // Standard Constructor
+        public CharacterInventoryItem() { }
+
+        // Generate New Item
+        public CharacterInventoryItem(string _name, string _desc, DefinedItems _item, string _icon, int _lvl, bool _isWeapon, DefinedItems[] _weaponMags, string _action, Dictionary<string, object> _metaData)
+        {
+            this.Name = _name;
+            this.Description = _desc;
+            this.DefinedItem = _item;
+            this.Icon = _icon;
+            this.Level = _lvl;
+            this.IsWeapon = _isWeapon;
+            this.WeaponMags = _weaponMags;
+            this.Action = _action;
+            this.Data = _metaData;
+        }
+
+        public void UpdateItem(string _name, string _description, string _icon, int _lvl)
+        {
+            this.Name = _name;
+            this.Description = _description;
+            this.Icon = _icon;
+            this.Level = _lvl;
+        }
     }
 
     /// <summary>
@@ -194,16 +230,19 @@ namespace FiveZ.Shared.Models
         public int InventorySpace { get; protected set; }
 
         [JsonProperty]
-        public CharacterInventoryItem WeaponOne { get; protected set; }
+        public CharacterInventoryItem PrimaryWeaponOne { get; protected set; }
 
         [JsonProperty]
-        public CharacterInventoryItem WeaponTwo { get; protected set; }
+        public CharacterInventoryItem PrimaryWeaponTwo { get; protected set; }
 
         [JsonProperty]
-        public CharacterInventoryItem WeaponThree { get; protected set; }
+        public CharacterInventoryItem SecondaryWeapon { get; protected set; }
 
         [JsonProperty]
-        public List<CharacterInventoryItem> Items { get; protected set; } = new List<CharacterInventoryItem>();
+        public CharacterInventoryItem MeleeWeapon { get; protected set; }
+
+        [JsonProperty]
+        public Dictionary<int, CharacterInventoryItem> Items { get; protected set; } = new Dictionary<int, CharacterInventoryItem>();
 
         // Base Constructor
         public CharacterInventory() { }
@@ -212,49 +251,185 @@ namespace FiveZ.Shared.Models
         public CharacterInventory(int _space)
         {
             this.InventorySpace = _space;
+            for (int a = 0; a < _space; a++)
+            {
+                this.Items[a] = null;
+            }
         }
 
         // Sets inventory max space
-        public void SetInventorySpace(int _space)
+        public void SetInventorySpace(int _space, Action<bool, List<CharacterInventoryItem>> _action)
         {
+            if (_space >= this.InventorySpace)
+            {
+                int difference = _space - this.InventorySpace;
+                int lastIndex = this.Items.Count - 1;
+                int newMaxIndex = lastIndex + difference;
+                for (int a = lastIndex + 1; a <= newMaxIndex; a++)
+                {
+                    this.Items[a] = null;
+                }
+                _action(false, null);
+            }
+            else if (_space <= this.InventorySpace)
+            {
+                bool itemsWereDropped = false;
+                int difference = this.InventorySpace - _space;
+                int lastIndex = this.Items.Count - 1;
+                int newMaxIndex = lastIndex - difference;
+                List<CharacterInventoryItem> droppedItems = new List<CharacterInventoryItem>();
+                for (int a = lastIndex; a > newMaxIndex; a--)
+                {
+                    if (this.Items[a] != null)
+                    {
+                        droppedItems.Add(this.Items[a]);
+                        if (!itemsWereDropped) itemsWereDropped = true;
+                    }
+                    this.Items.Remove(a);
+                }
+                _action(itemsWereDropped, droppedItems);
+            }
             this.InventorySpace = _space;
         }
 
-        // Sets weapon slot one
-        public void SetWeaponOne(CharacterInventoryItem _item)
+        // Primary Weapon One Methods
+        public void SetPrimaryWeaponOne(CharacterInventoryItem _item, Action<bool> _action)
         {
-            this.WeaponOne = _item;
+            if (this.PrimaryWeaponOne == null)
+            {
+                this.PrimaryWeaponOne = _item;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
+        }
+        public void RemovePrimaryWeaponOne(Action<bool> _action)
+        {
+            if (this.PrimaryWeaponOne != null)
+            {
+                this.PrimaryWeaponOne = null;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
+        }
+        
+        // Primary Weapon Two Methods
+        public void SetPrimaryWeaponTwo(CharacterInventoryItem _item, Action<bool> _action)
+        {
+            if (this.PrimaryWeaponTwo == null)
+            {
+                this.PrimaryWeaponTwo = _item;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
+        }
+        public void RemovePrimaryWeaponTwo(Action<bool> _action)
+        {
+            if (this.PrimaryWeaponTwo != null)
+            {
+                this.PrimaryWeaponTwo = null;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
         }
 
-        // Removes weapon slot one
-        public void RemoveWeaponOne()
+        // Secondary Weapon Methods
+        public void SetSecondaryWeapon(CharacterInventoryItem _item, Action<bool> _action)
         {
-            this.WeaponOne = null;
+            if (this.SecondaryWeapon == null)
+            {
+                this.SecondaryWeapon = _item;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
+        }
+        public void RemoveSecondaryWeapon(Action<bool> _action)
+        {
+            if (this.SecondaryWeapon != null)
+            {
+                this.SecondaryWeapon = null;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
         }
 
-        public void SetWeaponTwo(CharacterInventoryItem _item)
+        // Melee Weapon Methods
+        public void SetMeleeWeapon(CharacterInventoryItem _item, Action<bool> _action)
         {
-            this.WeaponTwo = _item;
+            if (this.MeleeWeapon == null)
+            {
+                this.MeleeWeapon = _item;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
         }
-        public void RemoveWeaponTwo()
+        public void RemoveMeleeWeapon(Action<bool> _action)
         {
-            this.WeaponTwo = null;
+            if (this.MeleeWeapon != null)
+            {
+                this.MeleeWeapon = null;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
         }
-        public void SetWeaponThree(CharacterInventoryItem _item)
+
+        // Regular Item Methods
+        public void AddItem(CharacterInventoryItem _item, Action<bool> _action)
         {
-            this.WeaponThree = _item;
+            bool isSlotAvailable = false;
+            int slotAvailable = 0;
+            for (int a = 0; a < this.Items.Count; a++)
+            {
+                if (this.Items[a] == null && !isSlotAvailable)
+                {
+                    isSlotAvailable = true;
+                    slotAvailable = a;
+                }
+            }
+            if (isSlotAvailable)
+            {
+                this.Items[slotAvailable] = _item;
+                _action(true);
+            }
+            else
+            {
+                _action(false);
+            }
         }
-        public void RemoveWeaponThree()
+        public void RemoveItem(int _index, Action<bool, CharacterInventoryItem> _action)
         {
-            this.WeaponThree = null;
-        }
-        public void AddItem(CharacterInventoryItem _item)
-        {
-            this.Items.Add(_item);
-        }
-        public void DeleteItem(CharacterInventoryItem _item)
-        {
-            this.Items.Remove(_item);
+            if (this.Items[_index] != null)
+            {
+                _action(true, this.Items[_index]);
+                this.Items[_index] = null;
+            }
+            else
+            {
+                _action(false, null);
+            }
         }
     }
     
@@ -400,7 +575,7 @@ namespace FiveZ.Shared.Models
         public Character() {  }
 
         // New Character Constructor
-        public Character(int _userID, string _first, string _last, Genders _gender)
+        public Character(int _userID, string _first, string _last, Genders _gender, int _inventorySpace)
         {
             this.UserId = _userID;
             this.FirstName = _first;
@@ -439,6 +614,9 @@ namespace FiveZ.Shared.Models
                 this.Clothing[10] = new int[] { 0, 0 }; // TEXTURES
                 this.Clothing[11] = new int[] { 118, 0 }; // TORSO2
             }
+
+            // Setting default invetory space
+            this.Inventory = new CharacterInventory(_inventorySpace);
         }
 
         // Sets character as no longer new

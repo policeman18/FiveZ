@@ -8,6 +8,8 @@ namespace FiveZ.Client.Classes.Managers
         public WeatherManager()
         {
             Main.GetInstance().RegisterEventHandler("FiveZ:SendClientWeather", new Action<int, int>(SendClientWeather));
+
+            Utils.WriteLine("WeatherManager Loaded");
         }
 
         public void SendClientWeather(int _current, int _last)

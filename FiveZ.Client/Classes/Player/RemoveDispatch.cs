@@ -10,6 +10,8 @@ namespace FiveZ.Client.Classes.Player
         {
             RemoveDispatched();
             Main.GetInstance().RegisterTickHandler(DisableWanted);
+
+            Utils.WriteLine("RemoveDispatch Loaded");
         }
 
         public void RemoveDispatched()

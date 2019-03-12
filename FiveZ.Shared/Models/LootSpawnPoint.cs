@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace FiveZ.Shared.Models
 {
@@ -23,9 +24,10 @@ namespace FiveZ.Shared.Models
             this.isAvailable = true;
         }
 
-        public void PickupItem()
+        public void PickupItem(Action _action)
         {
             this.isAvailable = false;
+            _action.Invoke();
         }
     }
 }

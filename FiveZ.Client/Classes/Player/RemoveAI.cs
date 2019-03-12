@@ -9,6 +9,8 @@ namespace FiveZ.Client.Classes.Player
         public RemoveAI()
         {
             Main.GetInstance().RegisterTickHandler(OnTick);
+
+            Utils.WriteLine("RemoveAI Loaded");
         }
 
         private async Task OnTick()

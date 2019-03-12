@@ -76,11 +76,10 @@ namespace FiveZ.Client.Menus
             // Character Setup
             CurrentCharacter = _character;
             World.RenderingCamera = World.CreateCamera(Game.Player.Character.Position, new Vector3(0f, 0f, 0f), 30f);
-            await BaseScript.Delay(100);
+            await BaseScript.Delay(50);
             World.RenderingCamera.AttachTo(Game.Player.Character.Bones[Bone.SKEL_Head], new Vector3(0f, 2f, 0.5f));
             SetPedBlendData();
             CreateMenu();
-            Main.GetInstance().RegisterTickHandler(KeepMenuEnabled);
         }
 
         private static void CreateMenu()
@@ -342,6 +341,8 @@ namespace FiveZ.Client.Menus
                     SetOverlay(7, CurrentCharacter.Appearance.Overlays[7].Index, (float)((_newPosition / 10m) * 1m));
                 }
             };
+
+            Main.GetInstance().RegisterTickHandler(KeepMenuEnabled);
         }
 
         public static void DisableCharacterModifier()
@@ -357,6 +358,7 @@ namespace FiveZ.Client.Menus
             {
                 Menu.OpenMenu();
             }
+            
             Game.DisableControlThisFrame(0, Control.MoveUpOnly);
             Game.DisableControlThisFrame(0, Control.MoveDownOnly);
             Game.DisableControlThisFrame(0, Control.MoveLeftOnly);
@@ -392,6 +394,7 @@ namespace FiveZ.Client.Menus
                     Game.Player.Character.SetNoCollision(p.Character, true);
                 }
             }
+
             await Task.FromResult(0);
         }
 

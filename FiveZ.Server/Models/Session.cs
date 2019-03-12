@@ -44,8 +44,12 @@ namespace FiveZ.Server.Models
             // Set User Last Played
             this.SetUserLastPlayed();
 
-            // Trigger Start Session Events
+            // Trigger Session Load Client Configs
             this.Player.TriggerEvent("FiveZ:SendClientConfigs", "spawns", JsonConvert.SerializeObject(ConfigManager.SpawningConfig));
+            this.Player.TriggerEvent("FiveZ:SendClientConfigs", "character", JsonConvert.SerializeObject(ConfigManager.CharacterConfig));
+            this.Player.TriggerEvent("FiveZ:SendClientConfigs", "controls", JsonConvert.SerializeObject(ConfigManager.ControlsConfig));
+
+            // Trigger Start Session Events
             this.Player.TriggerEvent("FiveZ:EnableCharacterScreen", JsonConvert.SerializeObject(this.Characters));
             this.Player.TriggerEvent("FiveZ:SendClientWeather", Convert.ToInt32(WeatherManager.CurrentWeather), Convert.ToInt32(WeatherManager.LastWeather));
             this.Player.TriggerEvent("FiveZ:SetClientTime", JsonConvert.SerializeObject(TimeManager.CurrentTime));
@@ -183,7 +187,7 @@ namespace FiveZ.Server.Models
                 using (LiteDatabase db = new LiteDatabase(ConfigManager.DBPath))
                 {
                     LiteCollection<Character> characters = db.GetCollection<Character>("characters");
-                    characters.Insert(new Character(this.User.Id, _firstName, _lastName, _gender));
+                    characters.Insert(new Character(this.User.Id, _firstName, _lastName, _gender, ConfigManager.CharacterConfig.StarterInventorySize));
                     IEnumerable<Character> allCharacters = characters.Find(ac => ac.UserId == this.User.Id);
                     return allCharacters.ToList();
                 }

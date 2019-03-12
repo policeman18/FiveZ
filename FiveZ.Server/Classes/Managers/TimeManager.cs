@@ -12,6 +12,8 @@ namespace FiveZ.Server.Classes.Managers
         {
             CurrentTime = DateTime.Now;
             IncreaseSecond();
+
+            Utils.WriteLine("TimeManager Loaded");
         }
 
         public async void IncreaseSecond()

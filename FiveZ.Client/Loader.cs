@@ -11,6 +11,9 @@ namespace FiveZ.Client
         {
             Utils.WriteLine("Loading Classes...");
 
+            // Loading Developer Tools
+            new DevTools();
+
             // Managers
             new ConfigManager();
             new SessionManager();
@@ -18,6 +21,7 @@ namespace FiveZ.Client
             new WeatherManager();
             new TimeManager();
             new LootManager();
+            new InventoryManager();
             
             // Player
             new RemoveAI();
