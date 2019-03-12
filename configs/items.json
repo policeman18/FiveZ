@@ -1,0 +1,32 @@
+{
+	"mre" : {
+		"Name" : "Meal Ready to Eat",
+		"Description" : "Military MRE",
+		"Icon" : "mre.png",
+		"Level" : 0
+	},
+	"water" : {
+		"Name" : "Water Bottle",
+		"Description" : "Bottle of Water",
+		"Icon" : "waterbottle.png",
+		"Level" : 0
+	},
+	"coke" : {
+		"Name" : "CocaCola",
+		"Description" : "Can of Soda",
+		"Icon" : "coke.png",
+		"Level" : 0
+	},
+	"pistol" : {
+		"Name" : "Baretta M9",
+		"Description" : "Handgun",
+		"Icon" : "pistol.png",
+		"Level" : 0
+	},
+	"pistolmag" : {
+		"Name" : "Baretta M9 Mag",
+		"Description" : "Handgun Mag",
+		"Icon" : "pistolmag.png",
+		"Level" : 0
+	}
+}

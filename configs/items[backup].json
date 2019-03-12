@@ -1,0 +1,142 @@
+[
+  {
+    "Name": "Medkit",
+    "Description": "Heals the player by 100 on use",
+    "Type": "Bandage",
+    "Icon": "medkit.png",
+    "Level": 1,
+    "IsWeapon": false,
+    "Action": "HealPlayer",
+    "Data": {
+      "HealAmount": 100,
+      "UseTime": 10
+    }
+  },
+  {
+    "Name": "Bandage",
+    "Description": "Heals the player by 20 on use",
+    "Type": "Bandage",
+    "Icon": "bandage.png",
+    "Level": 0,
+    "IsWeapon": false,
+    "Action": "HealPlayer",
+    "Data": {
+      "HealAmount": 20,
+      "UseTime": 5
+    }
+  },
+  {
+    "Name": "Ziptie",
+    "Description": "Bounds the nearest player",
+    "Type": "Bounding",
+    "Icon": "ziptie.png",
+    "Level": 2,
+    "IsWeapon": false,
+    "Action": "WeakBounding",
+    "Data": {
+      "UseTime": 10,
+      "BoudingBreakable": true
+    }
+  },
+  {
+    "Name": "Handcuff",
+    "Description": "Bounds the nearest player",
+    "Type": "StrongBounding",
+    "Icon": "handcuff.png",
+    "Level": 3,
+    "IsWeapon": false,
+    "Action": "",
+    "Data": {
+      "UseTime": 5,
+      "BoudingBreakable": false
+    }
+  },
+  {
+    "Name": "Canned Beans",
+    "Description": "Fills your hunger up by 50",
+    "Type": "Food",
+    "Icon": "beans.png",
+    "Level": 1,
+    "IsWeapon": false,
+    "Action": "PlayerEat",
+    "Data": {
+      "EatAmount": 50,
+      "UseTime": 5
+    }
+  },
+  {
+    "Name": "Handcuff Key",
+    "Description": "Unlocks nearest players handcuffs or your handcuffs",
+    "Type": "Key",
+    "Icon": "cuffkey.png",
+    "Level": 3,
+    "IsWeapon": false,
+    "Action": "UnhandcuffPlayer",
+    "Data": {
+      "UseTime": 3
+    }
+  },
+  {
+    "Name": "Water Bottle",
+    "Description": "Fills your thirst up by 50",
+    "Type": "Drink",
+    "Icon": "waterbottle.png",
+    "Level": 1,
+    "IsWeapon": false,
+    "Action": "PlayerDrink",
+    "Data": {
+      "DrinkAmount": 50
+    }
+  },
+  {
+    "Name": "M9 Baretta",
+    "Description": "Handgun that is semi automatic",
+    "Type": "Pistol",
+    "Icon": "m9pistol.png",
+    "Level": 2,
+    "IsWeapon": true,
+    "Action": "",
+    "Data": {
+      "WeaponType": "secondary",
+      "WeaponModel": "weapon_pistol",
+      "Attachments": [],
+      "Mag": null,
+      "StoreAnimation": "gangster",
+      "DrawAnimation": "gangster"
+    }
+  },
+  {
+    "Name": "Glock 17",
+    "Description": "Handgun that is semi automatic",
+    "Type": "Pistol",
+    "Icon": "glock17.png",
+    "Level": 2,
+    "IsWeapon": true,
+    "Action": "",
+    "Data": {
+      "WeaponType": "secondary",
+      "WeaponModel": "",
+      "Attachments": [],
+      "Mag": null,
+      "StoreAnimation": "gangster",
+      "DrawAnimation": "gangster"
+    }
+  },
+  {
+    "Name": "AR-15",
+    "Description": "Rifle that is automatic",
+    "Type": "Rifle",
+    "Icon": "ar15rifle.png",
+    "Level": 5,
+    "IsWeapon": true,
+    "Data": {
+      "Weapon": "weapon_carbinerifle",
+      "WeaponType": "primary",
+      "WeaponModel": "",
+      "Attachments": [],
+      "Mag": null,
+      "StoreAnimation": "rifle",
+      "DrawAnimation": "rifle"
+    }
+  }
+]

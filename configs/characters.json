@@ -1,0 +1,7 @@
+{
+	"MaxCharacters" : 6,
+	"StarterInventory" : [],
+	"PrimaryWeaponOnePosition" : [0.0, 0.0, 0.0],
+  "PrimaryWeaponTwoPosition": [ 0.0, 0.0, 0.0 ],
+  "StarterInventorySize" :  8
+}
